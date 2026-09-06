@@ -21,6 +21,7 @@ public sealed class ClimbBot : MonoBehaviour
 
     [SerializeField] private int roundIndex;
     public int RoundIndex { get => roundIndex; private set => roundIndex = value; }
+    public string RoundStatus { get; private set; } = "idle";
 
     [Header("Route")]
     [SerializeField] private Transform spawnPoint;
@@ -265,6 +266,9 @@ public sealed class ClimbBot : MonoBehaviour
             return;
 
         State = nextState;
+        if (nextState == BotState.Celebrate) RoundStatus = IsBelowSpawn() ? "fell" : "summit";
+        else if (nextState == BotState.Idle || nextState == BotState.Reset) RoundStatus = "idle";
+        else RoundStatus = "climbing";
 
         switch (nextState)
         {

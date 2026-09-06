@@ -25,3 +25,21 @@ Também pode executar pelo terminal, com o projeto fechado no editor:
 Execute a partir da raiz do repositório. Não use `-quit`: a verificação encerra o editor após os 30 segundos.
 
 **Climb → Rebuild greybox scene** recria a cena e as configurações deste greybox; sobrescreve edições na cena. Não é necessário para jogar.
+
+## Eventos sintéticos — issue #3
+
+Com Node 22, execute `npm ci && npm start` em `orchestrator/`, depois **Play** na cena `Climb`.
+O componente `GameEventClient` conecta automaticamente a `ws://127.0.0.1:8766/game` e reconecta se o processo reiniciar.
+
+Na raiz do repositório:
+
+```sh
+curl -sS -H 'Content-Type: application/json' \
+  --data-binary @fixtures/events/gift-rose.json http://127.0.0.1:8765/v1/events
+```
+
+Rosa cria um cubo pequeno, Confete um cubo maior e Perfume uma esfera placeholder. Objetos aparecem à frente do Bot e duram seis segundos. Os contadores `Small Count`, `Medium Count` e `Smoke Count` no Inspector e os logs `SPAWN` permitem conferir os fixtures, sem exibir dados do viewer.
+
+O jogo publica `{index,status}` no mesmo WS. `index` identifica o round atual a partir de 1; `Round Index` do Bot continua contando rounds concluídos a partir de 0. Não há HUD no Unity.
+
+Após recriar o greybox por **Climb → Rebuild greybox scene**, execute **Climb → Install event client** para reinstalar os prefabs e a conexão.

@@ -77,7 +77,7 @@ public static class ClimbValidation
             EditorApplication.delayCall += () => EditorApplication.Exit(passed ? 0 : 1);
     }
 
-    private static void Capture()
+    public static void Capture(string path = "Logs/issue2-playmode.png")
     {
         var camera = Camera.main;
         var target = new RenderTexture(1080, 1920, 24);
@@ -89,7 +89,7 @@ public static class ClimbValidation
         texture.ReadPixels(new Rect(0, 0, 1080, 1920), 0, 0);
         texture.Apply();
         Directory.CreateDirectory("Logs");
-        File.WriteAllBytes("Logs/issue2-playmode.png", texture.EncodeToPNG());
+        File.WriteAllBytes(path, texture.EncodeToPNG());
         camera.targetTexture = null;
         RenderTexture.active = previous;
         UnityEngine.Object.DestroyImmediate(texture);
