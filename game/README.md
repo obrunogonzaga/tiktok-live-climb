@@ -1,3 +1,15 @@
+# Reconstrução visual em revisão
+
+Abra `Assets/Scenes/ReferenceStudy.unity` para ver a nova torre, materiais,
+Bot, céu e nuvens. Use `Climb/Record reference study` para a inspeção real.
+[Escopo, fontes e evidências](../docs/visual-rebuild.md).
+
+O estudo visual aguarda revisão antes de integrar a rota completa.
+A cena `Climb` descrita abaixo preserva o gameplay anterior; sua composição
+foi reprovada e não representa o novo alvo visual.
+
+---
+
 # Climb — composição candidata da issue #14
 
 Abra esta pasta no Unity **6000.6.0f1** (Unity 6 / URP), abra

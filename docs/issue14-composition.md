@@ -1,4 +1,7 @@
-# #14 — composição candidata, aguardando OK visual do Bruno
+# #14 — composição anterior, reprovada visualmente
+
+**Reprovada por Bruno.** A reconstrução autorizada e suas novas evidências estão em
+[visual-rebuild.md](visual-rebuild.md). Os dados abaixo são histórico do greybox.
 
 Sem merge autorizado. Unity **6000.6.0f1 / URP**, cena
 `game/Assets/Scenes/Climb.unity`; base `main` em `534a1fc`, com #2–#4 presentes.
