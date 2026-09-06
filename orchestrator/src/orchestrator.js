@@ -1,6 +1,8 @@
 import { randomUUID } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { readFile, realpath, stat } from 'node:fs/promises';
 import { createServer } from 'node:http';
+import { extname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import Ajv2020 from 'ajv/dist/2020.js';
@@ -11,6 +13,7 @@ import { actionForUnity, loadLadder, resolveGift } from './ladder.js';
 
 const MAX_BODY_BYTES = 1_048_576;
 const MAX_REMEMBERED_IDS = 10_000;
+const TOAST_DURATION_MS = 2_500;
 const ROUND_STATUSES = new Set(['idle', 'climbing', 'fell', 'summit']);
 
 function repoPath(relativePath) {
@@ -122,16 +125,66 @@ function toDate(clock) {
   return value instanceof Date ? value : new Date(value);
 }
 
+function isWithinDirectory(directory, candidate) {
+  const pathFromDirectory = relative(directory, candidate);
+  return pathFromDirectory !== ''
+    && pathFromDirectory !== '..'
+    && !pathFromDirectory.startsWith(`..${sep}`)
+    && !isAbsolute(pathFromDirectory);
+}
+
+function staticAssetPath(overlayRoot, requestUrl) {
+  let decodedPathname;
+  try {
+    decodedPathname = decodeURIComponent(
+      new URL(requestUrl ?? '/', 'http://127.0.0.1').pathname
+    );
+  } catch {
+    return null;
+  }
+
+  const relativePath = decodedPathname === '/' ? 'index.html' : decodedPathname.slice(1);
+  if (!relativePath || relativePath.includes('\0')) {
+    return null;
+  }
+
+  const extension = extname(relativePath).toLowerCase();
+  if (relativePath !== 'index.html' && extension !== '.css' && extension !== '.js') {
+    return null;
+  }
+
+  const candidate = resolve(overlayRoot, relativePath);
+  return isWithinDirectory(overlayRoot, candidate) ? candidate : null;
+}
+
+function staticContentType(path) {
+  switch (extname(path).toLowerCase()) {
+    case '.css':
+      return 'text/css; charset=utf-8';
+    case '.js':
+      return 'text/javascript; charset=utf-8';
+    default:
+      return 'text/html; charset=utf-8';
+  }
+}
+
+function sendStaticNotFound(response) {
+  response.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' });
+  response.end('Not found');
+}
+
 /**
  * Creates the synthetic-event Orchestrator. Call start() once, then close()
- * when the owning process exits. It intentionally does not host overlay HTML.
+ * when the owning process exits. It also hosts the local static overlay.
  */
 export function createOrchestrator(options = {}) {
   const host = options.host ?? '127.0.0.1';
   const httpPort = options.httpPort ?? 8765;
   const wsPort = options.wsPort ?? 8766;
+  const overlayPort = options.overlayPort ?? 8790;
   const broadcastIntervalMs = options.broadcastIntervalMs ?? 100;
   const clock = options.clock ?? (() => new Date());
+  const overlayRoot = resolve(options.overlayRoot ?? repoPath('overlay'));
   const ladder = loadLadder(options.ladderPath ?? repoPath('config/ladder.v1.toml'));
   const { validateLiveEvent, validateOverlayState } = createValidators(
     options.liveEventSchemaPath ?? repoPath('schemas/live-event.v1.schema.json'),
@@ -170,6 +223,7 @@ export function createOrchestrator(options = {}) {
   }
 
   const eventServer = createServer(handleEventRequest);
+  const overlayServer = createServer(handleOverlayRequest);
   const socketServer = createServer((_, response) => {
     response.writeHead(404);
     response.end();
@@ -193,6 +247,7 @@ export function createOrchestrator(options = {}) {
 
   let started = false;
   let publishTimer = null;
+  let toastTimer = null;
   let lastBroadcastAt = 0;
 
   socketServer.on('upgrade', (request, socket, head) => {
@@ -242,6 +297,44 @@ export function createOrchestrator(options = {}) {
 
   function now() {
     return toDate(clock);
+  }
+
+  function spawnToastText(nickname) {
+    const prefix = 'Valeu, ';
+    const suffix = '!';
+    const normalized = nickname
+      .replace(/[\u0000-\u001f\u007f]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    const maximumNicknameLength = 80 - Array.from(prefix).length - Array.from(suffix).length;
+    const shortNickname = Array.from(normalized || 'alguém')
+      .slice(0, maximumNicknameLength)
+      .join('');
+
+    return `${prefix}${shortNickname}${suffix}`;
+  }
+
+  function setSpawnToast(event) {
+    const expiresAt = now().getTime() + TOAST_DURATION_MS;
+    const expiresAtIso = new Date(expiresAt).toISOString();
+    state.toast = {
+      kind: 'spawn',
+      text: spawnToastText(event.user.nickname),
+      expiresAt: expiresAtIso
+    };
+
+    if (toastTimer) {
+      clearTimeout(toastTimer);
+    }
+    toastTimer = setTimeout(() => {
+      toastTimer = null;
+      if (state.toast?.expiresAt !== expiresAtIso) {
+        return;
+      }
+      state.toast = null;
+      requestOverlayPublish();
+    }, Math.max(0, expiresAt - now().getTime()));
+    toastTimer.unref?.();
   }
 
   function rememberId(id) {
@@ -370,7 +463,11 @@ export function createOrchestrator(options = {}) {
       ? sendGameAction(event, resolution)
       : { spawned: false, dropped: false };
 
-    if (stateChanged) {
+    if (shouldSpawn) {
+      setSpawnToast(event);
+    }
+
+    if (stateChanged || shouldSpawn) {
       requestOverlayPublish();
     }
 
@@ -439,6 +536,52 @@ export function createOrchestrator(options = {}) {
     sendJson(response, 202, { accepted: result.accepted, duplicate: result.duplicate });
   }
 
+  async function handleOverlayRequest(request, response) {
+    if (request.method !== 'GET' && request.method !== 'HEAD') {
+      sendStaticNotFound(response);
+      return;
+    }
+
+    const assetPath = staticAssetPath(overlayRoot, request.url);
+    if (!assetPath) {
+      sendStaticNotFound(response);
+      return;
+    }
+
+    try {
+      const [realOverlayRoot, realAssetPath] = await Promise.all([
+        realpath(overlayRoot),
+        realpath(assetPath)
+      ]);
+      if (!isWithinDirectory(realOverlayRoot, realAssetPath)) {
+        sendStaticNotFound(response);
+        return;
+      }
+
+      const assetStat = await stat(realAssetPath);
+      if (!assetStat.isFile()) {
+        sendStaticNotFound(response);
+        return;
+      }
+
+      const body = request.method === 'HEAD' ? null : await readFile(realAssetPath);
+      response.writeHead(200, {
+        'cache-control': 'no-store',
+        'content-length': body?.length ?? assetStat.size,
+        'content-type': staticContentType(realAssetPath),
+        'x-content-type-options': 'nosniff'
+      });
+      if (request.method === 'HEAD') {
+        response.end();
+        return;
+      }
+
+      response.end(body);
+    } catch {
+      sendStaticNotFound(response);
+    }
+  }
+
   function overlayMessage() {
     if (!validateOverlayState(state)) {
       throw new Error('OverlayState does not match its schema');
@@ -490,9 +633,14 @@ export function createOrchestrator(options = {}) {
     await listen(eventServer, httpPort, host);
     try {
       await listen(socketServer, wsPort, host);
+      await listen(overlayServer, overlayPort, host);
       started = true;
     } catch (error) {
-      await closeServer(eventServer);
+      await Promise.allSettled([
+        closeServer(eventServer),
+        closeServer(socketServer),
+        closeServer(overlayServer)
+      ]);
       throw error;
     }
   }
@@ -501,6 +649,10 @@ export function createOrchestrator(options = {}) {
     if (publishTimer) {
       clearTimeout(publishTimer);
       publishTimer = null;
+    }
+    if (toastTimer) {
+      clearTimeout(toastTimer);
+      toastTimer = null;
     }
 
     for (const client of gameClients) {
@@ -520,7 +672,8 @@ export function createOrchestrator(options = {}) {
       new Promise((resolve) => gameWebSocketServer.close(resolve)),
       new Promise((resolve) => overlayWebSocketServer.close(resolve)),
       closeServer(eventServer),
-      closeServer(socketServer)
+      closeServer(socketServer),
+      closeServer(overlayServer)
     ]);
     started = false;
   }
@@ -530,6 +683,7 @@ export function createOrchestrator(options = {}) {
     close,
     getHttpPort: () => eventServer.address()?.port ?? null,
     getWsPort: () => socketServer.address()?.port ?? null,
+    getOverlayPort: () => overlayServer.address()?.port ?? null,
     getOverlayState: () => structuredClone(state),
     getMetrics: () => ({ ...metrics })
   };

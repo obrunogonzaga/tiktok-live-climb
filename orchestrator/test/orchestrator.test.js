@@ -1,12 +1,14 @@
 import { readFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 
 import WebSocket from 'ws';
 
 import { createOrchestrator } from '../src/orchestrator.js';
 
 const inboxes = new WeakMap();
+const overlayFixtureRoot = fileURLToPath(new URL('../fixtures/overlay', import.meta.url));
 
 async function fixture(name) {
   return JSON.parse(
@@ -15,7 +17,7 @@ async function fixture(name) {
 }
 
 async function startApp(t, options = {}) {
-  const app = createOrchestrator({ httpPort: 0, wsPort: 0, ...options });
+  const app = createOrchestrator({ httpPort: 0, wsPort: 0, overlayPort: 0, ...options });
   await app.start();
   t.after(async () => app.close());
   return app;
@@ -174,6 +176,33 @@ test('postEvents_invalidFixture_returns400AndDoesNotSendGameAction', async (t) =
   assert.equal(app.getMetrics().validGiftEvents, 0);
 });
 
+test('overlayHttp_getAndHead_servesAssetsAndRejectsTraversal', async (t) => {
+  const app = await startApp(t, { overlayRoot: overlayFixtureRoot });
+  const origin = `http://127.0.0.1:${app.getOverlayPort()}`;
+
+  const index = await fetch(`${origin}/`);
+  assert.equal(index.status, 200);
+  assert.match(index.headers.get('content-type'), /^text\/html/);
+  assert.match(await index.text(), /Overlay fixture/);
+
+  const head = await fetch(`${origin}/`, { method: 'HEAD' });
+  assert.equal(head.status, 200);
+  assert.match(head.headers.get('content-type'), /^text\/html/);
+  assert.equal(await head.text(), '');
+
+  const stylesheet = await fetch(`${origin}/style.css`);
+  assert.equal(stylesheet.status, 200);
+  assert.match(stylesheet.headers.get('content-type'), /^text\/css/);
+  assert.match(await stylesheet.text(), /fixture/);
+
+  const script = await fetch(`${origin}/overlay.js`);
+  assert.equal(script.status, 200);
+  assert.match(script.headers.get('content-type'), /^text\/javascript/);
+
+  const traversal = await fetch(`${origin}/%2e%2e%2fpackage.json`);
+  assert.equal(traversal.status, 404);
+});
+
 test('postEvents_comboTickAndDone_countsRepeatOnceAndSpawnsOnce', async (t) => {
   const app = await startApp(t);
   const game = await connectWebSocket(`ws://127.0.0.1:${app.getWsPort()}/game`);
@@ -207,6 +236,35 @@ test('postEvents_comboTickAndDone_countsRepeatOnceAndSpawnsOnce', async (t) => {
   const noSecondFinishedAction = expectNoMessage(game);
   assert.equal((await postJson(app, sameFinishedCombo)).status, 202);
   await noSecondFinishedAction;
+});
+
+test('postEvents_finishedGift_setsAndExpiresToastWithoutTickOrDuplicate', async (t) => {
+  const app = await startApp(t);
+  const overlay = await connectWebSocket(`ws://127.0.0.1:${app.getWsPort()}/overlay`);
+  await nextJson(overlay);
+  const tick = await fixture('gift-combo-tick.json');
+  const done = await fixture('gift-combo-done.json');
+
+  assert.equal((await postJson(app, tick)).status, 202);
+  assert.equal((await nextJson(overlay)).toast, null);
+  assert.equal(app.getOverlayState().toast, null);
+
+  const toastState = nextJson(overlay);
+  assert.equal((await postJson(app, done)).status, 202);
+  const stateWithToast = await toastState;
+  assert.equal(stateWithToast.toast.kind, 'spawn');
+  assert.equal(stateWithToast.toast.text, 'Valeu, Ana!');
+  assert.ok(Array.from(stateWithToast.toast.text).length <= 80);
+  const expiresAt = stateWithToast.toast.expiresAt;
+
+  const duplicate = await postJson(app, done);
+  assert.deepEqual(await duplicate.json(), { accepted: true, duplicate: true });
+  assert.equal(app.getOverlayState().toast.expiresAt, expiresAt);
+
+  const clearedState = nextJson(overlay, 3_500);
+  await new Promise((resolve) => setTimeout(resolve, 2_600));
+  assert.equal(app.getOverlayState().toast, null);
+  assert.equal((await clearedState).toast, null);
 });
 
 test('postEvents_newIdSameSemanticGift_isDeduplicated', async (t) => {
@@ -311,6 +369,7 @@ test('postEvents_spawnCap_dropsNinthSpawnButCountsGift', async (t) => {
     event.id = `01TEST00000000000000000${String(20 + index).padStart(3, '0')}`;
     event.occurredAt = `2026-09-06T00:01:${String(index).padStart(2, '0')}.000Z`;
     event.receivedAt = `2026-09-06T00:01:${String(index).padStart(2, '0')}.050Z`;
+    event.user.nickname = index === 8 ? 'Nove' : 'Ana';
     assert.equal((await postJson(app, event)).status, 202);
   }
 
@@ -325,6 +384,8 @@ test('postEvents_spawnCap_dropsNinthSpawnButCountsGift', async (t) => {
     app.getOverlayState().ladder.find((entry) => entry.slug === 'rose').countSession,
     9
   );
+  assert.equal(app.getOverlayState().toast.kind, 'spawn');
+  assert.equal(app.getOverlayState().toast.text, 'Valeu, Nove!');
 });
 
 test('gameRound_validMessageUpdatesOverlayAndInvalidMessageIsIgnored', async (t) => {
