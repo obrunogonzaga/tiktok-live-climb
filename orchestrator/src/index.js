@@ -3,7 +3,9 @@ import { createOrchestrator } from './orchestrator.js';
 const orchestrator = createOrchestrator();
 
 await orchestrator.start();
-console.info('orchestrator listening on http://127.0.0.1:8765 and ws://127.0.0.1:8766');
+console.info(
+  'orchestrator listening on http://127.0.0.1:8765, ws://127.0.0.1:8766, and http://127.0.0.1:8790'
+);
 
 let closing = false;
 async function close() {

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Climb · Overlay</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./overlay.js" defer></script>
+</head>
+<body>
+  <main id="overlay" aria-label="Overlay da sessão">
+    <section id="ladder" aria-labelledby="ladder-title">
+      <header><h1 id="ladder-title">Presentes</h1><span>Sessão</span></header>
+      <ol id="gifts">
+        <li data-slug="rose"><span class="icon" aria-hidden="true">🌹</span><div><strong>Rosa</strong><small>1 moeda</small></div><span class="count" aria-label="0 na sessão">×0</span></li>
+        <li data-slug="finger_heart"><span class="icon" aria-hidden="true">💕</span><div><strong>Coração</strong><small>5 moedas</small></div><span class="count" aria-label="0 na sessão">×0</span></li>
+        <li data-slug="perfume"><span class="icon" aria-hidden="true">💄</span><div><strong>Perfume</strong><small>20 moedas</small></div><span class="count" aria-label="0 na sessão">×0</span></li>
+        <li data-slug="confetti"><span class="icon" aria-hidden="true">🎉</span><div><strong>Confete</strong><small>100 moedas</small></div><span class="count" aria-label="0 na sessão">×0</span></li>
+        <li data-slug="galaxy"><span class="icon" aria-hidden="true">🌌</span><div><strong>Galáxia</strong><small>1.000 moedas</small></div><span class="count" aria-label="0 na sessão">×0</span></li>
+        <li data-slug="sports_car"><span class="icon" aria-hidden="true">🚙</span><div><strong>Carro</strong><small>7.000 moedas</small></div><span class="count" aria-label="0 na sessão">×0</span></li>
+        <li data-slug="lion"><span class="icon" aria-hidden="true">🦁</span><div><strong>Leão</strong><small>29.999 moedas</small></div><span class="count" aria-label="0 na sessão">×0</span></li>
+      </ol>
+    </section>
+    <section id="round" aria-label="Round atual">
+      <p id="round-label">ROUND 1 · idle</p>
+      <span id="bridge" role="status" title="Conexão indisponível" hidden>bridge?</span>
+    </section>
+    <aside id="toast" role="status" aria-live="polite" hidden><p id="toast-text"></p></aside>
+  </main>
+</body>
+</html>

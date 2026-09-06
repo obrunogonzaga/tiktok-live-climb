@@ -1,6 +1,6 @@
 # Orchestrator
 
-Node 22 worker for synthetic `LiveEvent` v1 input. It loads `../config/ladder.v1.toml` at startup, exposes the HTTP bridge endpoint, and serves separate Unity and Overlay WebSocket routes.
+Node 22 worker for synthetic `LiveEvent` v1 input. It loads `../config/ladder.v1.toml` at startup, exposes the HTTP bridge endpoint, serves the local Overlay files, and exposes separate Unity and Overlay WebSocket routes.
 
 ```bash
 cd orchestrator
@@ -11,8 +11,9 @@ npm start
 - `POST http://127.0.0.1:8765/v1/events`
 - `ws://127.0.0.1:8766/game`
 - `ws://127.0.0.1:8766/overlay`
+- `GET` / `HEAD` `http://127.0.0.1:8790/` (`../overlay/index.html`)
 
-`/game` receives only `SpawnObstacle.Small`, `SpawnObstacle.Medium`, or `SpawnSmoke`. Unsupported ladder actions remain counted but do not spawn. `/overlay` receives a schema-valid snapshot immediately and thereafter at most 10 times per second.
+`/game` receives only `SpawnObstacle.Small`, `SpawnObstacle.Medium`, or `SpawnSmoke`. Unsupported ladder actions remain counted but do not spawn. A completed valid Gift sets a local spawn toast for 2.5 seconds, including when the spawn cap drops the Unity action. `/overlay` receives a schema-valid snapshot immediately and thereafter at most 10 times per second.
 
 ```bash
 curl -sS -o /dev/null -w '%{http_code}\n' \

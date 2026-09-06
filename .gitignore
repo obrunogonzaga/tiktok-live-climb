@@ -89,3 +89,8 @@ game/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Pro
 game/[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 game/UIElementsSchema/
 game/[Aa]ssets/[Ss]ceneDependencyCache*
+
+# Browser QA scratch; keep the issue acceptance screenshot.
+.playwright-cli/
+output/playwright/*
+!output/playwright/overlay-9x16.png
