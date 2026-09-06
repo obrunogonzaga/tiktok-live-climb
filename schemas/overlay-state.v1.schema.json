@@ -27,8 +27,11 @@
           "type": "string",
           "enum": ["idle", "climbing", "fell", "summit"]
         },
-        "startedAt": { "type": "string", "format": "date-time" }
-      }
+        "startedAt": { "type": "string", "format": "date-time" },
+        "height": { "type": "integer", "minimum": 0, "description": "Optional current height in whole metres." },
+        "record": { "type": "integer", "minimum": 0, "description": "Optional maximum height in the running game session." }
+      },
+      "dependentRequired": { "height": ["record"], "record": ["height"] }
     },
     "ladder": {
       "type": "array",

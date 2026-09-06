@@ -1,10 +1,12 @@
-# Reconstrução visual — primeiro trecho em revisão
+# Reconstrução visual — direção aprovada
 
 Em 06/09/2026, Bruno reprovou visualmente a composição do PR #18 e autorizou
 reconstruir a cena do zero. O novo gate é um **trecho representativo no Unity
 com geometria, materiais, céu, nuvens, luz e Bot**, antes de expandir o percurso.
 Essa decisão substitui, para este estudo, o adiamento de toda a aparência para
-as fases seguintes. Não aprova o resultado nem autoriza merge.
+as fases seguintes. Bruno aprovou depois esta direção visual (“Sensacional!!! Isso aí”) e a proposta
+de subida contínua. A integração atual está em [continuous-climb.md](continuous-climb.md).
+Isso não autoriza merge automático.
 
 ## Abrir
 
@@ -88,8 +90,9 @@ A composição de cor/noite é aplicada no material/shader, sobre as fontes list
 - [x] Materiais, céu, estrelas, nuvens e iluminação presentes na captura real.
 - [x] Antes/depois, comparação, inspeção lateral e escala de celular conferidos.
 - [x] Câmera reaberta e gravação reproduzida; nenhum contrato/runtime anterior alterado.
-- [ ] Bruno aprova a direção visual deste trecho.
-- [ ] Ajustes pedidos na revisão, extensão da rota e regressão funcional completa.
+- [x] Bruno aprova a direção visual deste trecho.
+- [x] Extensão da rota e regressão da subida contínua: [integração e evidências](continuous-climb.md).
+- [ ] Revisão visual do movimento contínuo antes de merge.
 
 O estudo ainda não reproduz a densidade de detalhes/VFX do concept: não contém
 Leão, carro, galáxia, gifts finais, pétalas ou fumaça de Perfume. As nuvens,

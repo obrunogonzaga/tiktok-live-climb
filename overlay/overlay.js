@@ -68,7 +68,12 @@
       return row;
     });
     list.replaceChildren(...rows);
-    roundLabel.textContent = `ROUND ${integer.format(state.round.index)} · ${state.round.status}`;
+    const progress = Number.isSafeInteger(state.round.height) && state.round.height >= 0 &&
+      Number.isSafeInteger(state.round.record) && state.round.record >= state.round.height;
+    roundLabel.style.fontSize = progress ? '24px' : '28px';
+    roundLabel.textContent = progress
+      ? `ROUND ${integer.format(state.round.index)} · ${state.round.status === 'fell' ? 'CAIU' : `${integer.format(state.round.height)} m`} · REC ${integer.format(state.round.record)} m`
+      : `ROUND ${integer.format(state.round.index)} · ${state.round.status}`;
     refreshBridge();
     refreshToast();
   }

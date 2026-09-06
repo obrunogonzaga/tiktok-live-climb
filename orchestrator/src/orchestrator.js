@@ -109,7 +109,7 @@ function parseRoundMessage(raw) {
     return null;
   }
 
-  if (!isRecord(value) || Object.keys(value).length !== 2) {
+  if (!isRecord(value) || Object.keys(value).some((key) => !['index', 'status', 'height', 'record'].includes(key))) {
     return null;
   }
 
@@ -117,7 +117,14 @@ function parseRoundMessage(raw) {
     return null;
   }
 
-  return { index: value.index, status: value.status };
+  const hasProgress = Object.hasOwn(value, 'height') || Object.hasOwn(value, 'record');
+  if (hasProgress && (!Number.isSafeInteger(value.height) || value.height < 0 ||
+      !Number.isSafeInteger(value.record) || value.record < value.height)) {
+    return null;
+  }
+  return hasProgress
+    ? { index: value.index, status: value.status, height: value.height, record: value.record }
+    : { index: value.index, status: value.status };
 }
 
 function toDate(clock) {
@@ -277,7 +284,8 @@ export function createOrchestrator(options = {}) {
         return;
       }
 
-      if (state.round.index === round.index && state.round.status === round.status) {
+      if (state.round.index === round.index && state.round.status === round.status &&
+          state.round.height === round.height && state.round.record === round.record) {
         return;
       }
 

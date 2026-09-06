@@ -1,0 +1,60 @@
+{
+  "results": [
+    {
+      "fixture": "gift-rose.json",
+      "status": 202,
+      "body": {
+        "accepted": true,
+        "duplicate": false
+      }
+    },
+    {
+      "fixture": "gift-combo-done.json",
+      "status": 202,
+      "body": {
+        "accepted": true,
+        "duplicate": false
+      }
+    },
+    {
+      "fixture": "gift-perfume.json",
+      "status": 202,
+      "body": {
+        "accepted": true,
+        "duplicate": false
+      }
+    },
+    {
+      "fixture": "gift-confetti.json",
+      "status": 202,
+      "body": {
+        "accepted": true,
+        "duplicate": false
+      }
+    },
+    {
+      "fixture": "invalid",
+      "status": 400,
+      "body": {
+        "error": "invalid_event"
+      }
+    }
+  ],
+  "beforeInvalid": {
+    "connected": true,
+    "small": 2,
+    "medium": 1,
+    "smoke": 1,
+    "round": 1,
+    "status": "climbing"
+  },
+  "afterInvalid": {
+    "connected": true,
+    "small": 2,
+    "medium": 1,
+    "smoke": 1,
+    "round": 1,
+    "status": "climbing"
+  },
+  "invalidNoSpawn": true
+}

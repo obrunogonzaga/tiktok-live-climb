@@ -1,6 +1,6 @@
 Shader "Climb/Cloud Volume"
 {
- Properties { _LitColor("Moonlit edges",Color)=(0.42,0.58,0.86,1) _ShadeColor("Cloud shadow",Color)=(0.035,0.065,0.16,1) _Density("Density",Float)=9 _Seed("Seed",Float)=0 }
+ Properties { _LitColor("Moonlit edges",Color)=(0.42,0.58,0.86,1) _ShadeColor("Cloud shadow",Color)=(0.035,0.065,0.16,1) _Density("Density",Float)=9 _Seed("Seed",Float)=0 _Steps("Ray steps",Range(8,40))=40 _CheapLighting("Distant lighting",Float)=0 }
  SubShader
  {
   Tags { "RenderPipeline"="UniversalPipeline" "Queue"="Transparent-20" "RenderType"="Transparent" }
@@ -15,7 +15,7 @@ Shader "Climb/Cloud Volume"
    #pragma target 3.5
    #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
    CBUFFER_START(UnityPerMaterial)
-    half4 _LitColor, _ShadeColor; float _Density, _Seed;
+    half4 _LitColor, _ShadeColor; float _Density, _Seed, _Steps, _CheapLighting;
    CBUFFER_END
    struct Attributes { float4 positionOS:POSITION; };
    struct Varyings { float4 positionCS:SV_POSITION; float3 positionOS:TEXCOORD0; };
@@ -29,12 +29,14 @@ Shader "Climb/Cloud Volume"
    float density(float3 p)
    {
     float3 q=p*14+float3(_Seed,_Time.y*.025,0);
-    float n=noise(q)*.57+noise(q*2.07)*.28+noise(q*4.13)*.15;
     float shape=-1;
     shape=max(shape,.27-length((p-float3(-.27,-.02,.02))*float3(1,1.45,1.2)));
     shape=max(shape,.31-length((p-float3(-.05,.06,-.03))*float3(1,1.2,1.1)));
     shape=max(shape,.27-length((p-float3(.18,.02,.05))*float3(1,1.35,1.2)));
     shape=max(shape,.19-length((p-float3(.36,-.04,0))*float3(1,1.5,1.2)));
+    // Noise can add at most .072 to the signed shape; empty space needs no sampling.
+    if(shape<-.075)return 0;
+    float n=noise(q)*.57+noise(q*2.07)*.28+noise(q*4.13)*.15;
     return saturate((shape+(n-.6)*.18)*9);
    }
    half4 frag(Varyings i):SV_Target
@@ -44,11 +46,15 @@ Shader "Climb/Cloud Volume"
     float nearT=max(max(min(t0.x,t1.x),min(t0.y,t1.y)),min(t0.z,t1.z));
     float farT=min(min(max(t0.x,t1.x),max(t0.y,t1.y)),max(t0.z,t1.z));
     nearT=max(nearT,0);if(farT<=nearT)return 0;
-    float stepT=(farT-nearT)/40;float4 result=0;
+    int steps=(int)clamp(_Steps,8,40);float stepT=(farT-nearT)/steps;float4 result=0;
     for(int s=0;s<40;s++)
     {
+     if(s>=steps)break;
      float3 p=origin+direction*(nearT+(s+.5)*stepT);float d=density(p);
-     float shadow=density(p+float3(-.05,.1,-.04))+density(p+float3(-.1,.2,-.08));
+     if(d<=0)continue;
+     float shadow;
+     [branch] if(_CheapLighting>.5)shadow=density(p+float3(-.075,.15,-.06))*2;
+     else shadow=density(p+float3(-.05,.1,-.04))+density(p+float3(-.1,.2,-.08));
      float light=.16+.84*exp(-shadow*2.2);
      float alpha=1-exp(-d*stepT*_Density);
      float3 color=lerp(_ShadeColor.rgb,_LitColor.rgb,light);

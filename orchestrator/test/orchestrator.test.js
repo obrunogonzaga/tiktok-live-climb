@@ -402,3 +402,35 @@ test('gameRound_validMessageUpdatesOverlayAndInvalidMessageIsIgnored', async (t)
   game.send(JSON.stringify({ index: 2, status: 'climbing' }));
   assert.deepEqual((await roundState).round, { index: 2, status: 'climbing' });
 });
+
+test('gameRound_heightOnlyChange_updatesProgressWithoutChangingRound', async (t) => {
+  const app = await startApp(t);
+  const overlay = await connectWebSocket(`ws://127.0.0.1:${app.getWsPort()}/overlay`);
+  await nextJson(overlay);
+  const game = await connectWebSocket(`ws://127.0.0.1:${app.getWsPort()}/game`);
+  let update = nextJson(overlay);
+  game.send(JSON.stringify({ index: 1, status: 'climbing', height: 24, record: 24 }));
+  assert.deepEqual((await update).round, { index: 1, status: 'climbing', height: 24, record: 24 });
+  update = nextJson(overlay);
+  game.send(JSON.stringify({ index: 1, status: 'climbing', height: 25, record: 25 }));
+  assert.deepEqual((await update).round, { index: 1, status: 'climbing', height: 25, record: 25 });
+  update = nextJson(overlay);
+  game.send(JSON.stringify({ index: 2, status: 'climbing', height: 0, record: 25 }));
+  assert.deepEqual((await update).round, { index: 2, status: 'climbing', height: 0, record: 25 });
+});
+
+test('gameRound_invalidProgress_isIgnoredWithoutPublishing', async (t) => {
+  const app = await startApp(t);
+  const overlay = await connectWebSocket(`ws://127.0.0.1:${app.getWsPort()}/overlay`);
+  await nextJson(overlay);
+  const game = await connectWebSocket(`ws://127.0.0.1:${app.getWsPort()}/game`);
+  const noUpdate = expectNoMessage(overlay);
+  for (const progress of [
+    { height: 1 }, { record: 1 }, { height: -1, record: 1 },
+    { height: 2, record: 1 }, { height: '1', record: 1 },
+    { height: 1.5, record: 2 }, { height: 0, record: Number.MAX_SAFE_INTEGER + 1 },
+    { height: 1, record: 1, unknown: true }
+  ]) game.send(JSON.stringify({ index: 1, status: 'climbing', ...progress }));
+  await noUpdate;
+  assert.deepEqual(app.getOverlayState().round, { index: 1, status: 'idle' });
+});

@@ -232,8 +232,10 @@ def curved_visor(
     columns = 10
     rows = 3
     extent = math.radians(126)
-    radius_x = 0.361
-    radius_y = 0.346
+    # Slightly proud of the helmet shell across the side wrap. This prevents
+    # white shell seams from appearing through the visor in a 3/4 camera view.
+    radius_x = 0.379
+    radius_y = 0.357
     half_height = 0.094
     vertices: list[tuple[float, float, float]] = []
     faces: list[tuple[int, int, int, int]] = []

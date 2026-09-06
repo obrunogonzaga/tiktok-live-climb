@@ -14,6 +14,7 @@ public sealed class GameEventClient : MonoBehaviour
     [SerializeField] private GameObject smallPrefab;
     [SerializeField] private GameObject mediumPrefab;
     [SerializeField] private GameObject smokePrefab;
+    [SerializeField] private Transform effectsRoot;
     [SerializeField] private int smallCount;
     [SerializeField] private int mediumCount;
     [SerializeField] private int smokeCount;
@@ -21,6 +22,7 @@ public sealed class GameEventClient : MonoBehaviour
     public int MediumCount => mediumCount;
     public int SmokeCount => smokeCount;
     public bool Connected => connected;
+    public Transform EffectsRoot => effectsRoot;
 
     private readonly ConcurrentQueue<string> received = new();
     private CancellationTokenSource lifetime;
@@ -28,9 +30,17 @@ public sealed class GameEventClient : MonoBehaviour
     private string latestRound;
     private string pendingRound;
     private Task connectionTask;
+    private ContinuousTower progressTower;
 
     [Serializable] private sealed class Command { public string action; }
     [Serializable] private sealed class Round { public int index; public string status; }
+    [Serializable] private sealed class ProgressRound
+    {
+        public int index;
+        public string status;
+        public int height;
+        public int record;
+    }
 
     public void Configure(ClimbBot target, GameObject small, GameObject medium, GameObject smoke)
     {
@@ -38,6 +48,19 @@ public sealed class GameEventClient : MonoBehaviour
         smallPrefab = small;
         mediumPrefab = medium;
         smokePrefab = smoke;
+        if (effectsRoot == null && bot != null && bot.ContinuousMode)
+            effectsRoot = UnityEngine.Object.FindFirstObjectByType<ContinuousTower>()?.EffectsRoot;
+    }
+
+    public void Configure(ClimbBot target, GameObject small, GameObject medium, GameObject smoke, Transform dynamicEffectsRoot)
+    {
+        Configure(target, small, medium, smoke);
+        ConfigureEffectsRoot(dynamicEffectsRoot);
+    }
+
+    public void ConfigureEffectsRoot(Transform dynamicEffectsRoot)
+    {
+        effectsRoot = dynamicEffectsRoot;
     }
 
     private void OnEnable()
@@ -58,7 +81,12 @@ public sealed class GameEventClient : MonoBehaviour
     {
         if (bot == null) return;
         // The bot counts completed rounds from zero; OverlayState numbers the current round from one.
-        string round = JsonUtility.ToJson(new Round { index = bot.RoundIndex + 1, status = bot.RoundStatus });
+        if (progressTower == null && bot.ContinuousMode) progressTower = UnityEngine.Object.FindFirstObjectByType<ContinuousTower>();
+        var tower = progressTower;
+        string round = tower != null && bot.ContinuousMode
+            ? JsonUtility.ToJson(new ProgressRound { index = bot.RoundIndex + 1, status = bot.RoundStatus,
+                height = Mathf.FloorToInt(tower.CurrentHeight), record = Mathf.FloorToInt(tower.RecordHeight) })
+            : JsonUtility.ToJson(new Round { index = bot.RoundIndex + 1, status = bot.RoundStatus });
         if (round != latestRound)
         {
             latestRound = round;
@@ -151,7 +179,9 @@ public sealed class GameEventClient : MonoBehaviour
         }
         if (prefab == null) return;
         Vector3 position = bot.transform.position + bot.transform.forward * 0.9f + Vector3.up * 1.2f;
-        var instance = Instantiate(prefab, position, Quaternion.identity);
+        var instance = effectsRoot != null
+            ? Instantiate(prefab, position, Quaternion.identity, effectsRoot)
+            : Instantiate(prefab, position, Quaternion.identity);
         instance.name = command.action == "SpawnSmoke" ? "Smoke" : "Obstacle";
         Destroy(instance, 6);
         switch (command.action)

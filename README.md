@@ -2,9 +2,9 @@
 
 Live **9:16** em que um **bot sobe sozinho**. O chat paga pra atrapalhar: gift vira obstáculo, fumaça, empurrão ou boss; um TTS agradece o doador. Zero operação durante a sessão — só ligar o stream.
 
-**Status:** spec v1 · sem código ainda  
-**Owner:** [Bruno Gonzaga Santos](https://github.com/obrunogonzaga)  
-**Repo:** [obrunogonzaga/tiktok-live-climb](https://github.com/obrunogonzaga/tiktok-live-climb)  
+**Status:** MVP local · subida contínua integrada · revisão visual/merge pendentes
+**Owner:** [Bruno Gonzaga Santos](https://github.com/obrunogonzaga)
+**Repo:** [obrunogonzaga/tiktok-live-climb](https://github.com/obrunogonzaga/tiktok-live-climb)
 **Tracker:** [Issues](https://github.com/obrunogonzaga/tiktok-live-climb/issues) · [Fase 1](https://github.com/obrunogonzaga/tiktok-live-climb/milestone/1)
 
 Formato: lives tipo caos/climb (chat controla). Requisito duro: automação ponta a ponta.
@@ -83,7 +83,7 @@ TTS: no máximo 1 fala / 2,5 s. O resto vira toast. Like não fala.
 
 | Camada | Escolha |
 | --- | --- |
-| Jogo + **Bot** | Unity + C# · URP · 1080×1920 borderless · Windows na live |
+| Jogo + **Bot** | Unity 6 + C# · URP · 1080×1920 Windowed · Windows na live |
 | Eventos | TikFinity → **Bridge** → `LiveEvent` |
 | Fila / TTS / overlay state | orchestrator local (HTTP + WebSocket) |
 | Voz | ElevenLabs + fallback TTS local |
@@ -112,7 +112,8 @@ TTS: no máximo 1 fala / 2,5 s. O resto vira toast. Like não fala.
     └── overlay-state.v1.schema.json
 ```
 
-Ainda não há pasta Unity. Scaffold é a [#2](https://github.com/obrunogonzaga/tiktok-live-climb/issues/2).
+O projeto Unity está em `game/`, o Orchestrator Node 22 em `orchestrator/` e o Overlay em `overlay/`.
+A direção visual e a subida contínua foram aprovadas para implementação por Bruno; veja [o comportamento atual e as evidências](docs/continuous-climb.md).
 
 ---
 
@@ -166,7 +167,24 @@ Meshy só se um prop travar. Hero (**Bot**) não.
 
 ## Rodar
 
-Ainda não há build. Quando existir: Unity 1080×1920 borderless, overlay em `http://127.0.0.1:8790/`, eventos em `POST /v1/events`. Até lá, o “run” é abrir uma issue da Fase 1.
+Abra `game/Assets/Scenes/Climb.unity` no Unity **6000.6.0f1**, Game **1080×1920**, e clique Play sem teclado.
+O Bot sobe por uma hélice; 32 plataformas e quatro trechos de torre são reciclados.
+Queda definitiva reinicia o round e preserva o recorde durante a execução.
+
+Com Node 22, na raiz do repo:
+
+```sh
+npm --prefix orchestrator ci
+npm --prefix orchestrator start
+```
+
+Overlay: `http://127.0.0.1:8790/`; eventos: `POST http://127.0.0.1:8765/v1/events`.
+[Instruções e validações](game/README.md) · [Vídeo real](docs/evidence/continuous/playthrough.mp4).
+
+![Subida contínua — capturas reais do Unity](docs/evidence/continuous/mobile-journey.png)
+
+As três actions sintéticas existentes estão integradas; novas ajudas, arte final dos gifts,
+TikFinity real, TTS e transmissão ao vivo continuam fora desta entrega.
 
 Secrets (ElevenLabs, etc.) ficam em `.env` local — nunca no git.
 
