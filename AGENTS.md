@@ -1,20 +1,37 @@
 # Agents
 
-Spec-only repo. Não há código ainda. Ler nesta ordem antes de implementar:
+Issues da Fase 1 **são o prompt**. Executar só aquele issue. Não expandir. Não reabrir decisão desta página.
 
-1. [CONTEXT.md](./CONTEXT.md) — língua do domínio
-2. [ONEPAGER.md](./ONEPAGER.md) — produto, stack, fases, aceite
-3. A fonte da verdade da área que você vai tocar:
+Ler nesta ordem:
+
+1. Este arquivo (locks)
+2. [CONTEXT.md](./CONTEXT.md)
+3. O body do issue (passos + out of scope + validate)
+4. Os docs que o issue apontar
+
+## Locks (não renegociar)
+
+| Item | Valor |
+| --- | --- |
+| Unity | **6 (6000) URP 3D**, pasta `game/` |
+| Resolução | 1080×1920, **Windowed** (nunca exclusive fullscreen) |
+| Bot | CharacterController + waypoints pra cima. State machine. Sem LLM |
+| Orchestrator | Node 22 em `orchestrator/` |
+| Eventos | só HTTP `POST http://127.0.0.1:8765/v1/events` — sem UDP |
+| WebSocket | `ws://127.0.0.1:8766/game` e `/overlay` |
+| Overlay HTTP | `http://127.0.0.1:8790/` arquivos em `overlay/` |
+| HUD | só HTML. Unity não desenha ladder/placar/toast |
+| Arte | Blender em `art/`. Greybox até o issue #7 |
+| Fixtures | `fixtures/events/*.json` |
+
+## Docs por área
 
 | Se for mexer em | Ler |
 | --- | --- |
-| Gifts, spawn, TTS por gift, config | [docs/gift-ladder.md](./docs/gift-ladder.md) + `config/ladder.v1.toml` |
-| Bridge, webhook, fila, Unity listener | [docs/events.md](./docs/events.md) + `schemas/live-event.v1.schema.json` |
-| HTML overlay, LIVE Studio, OBS, áudio | [docs/overlay-capture.md](./docs/overlay-capture.md) + `schemas/overlay-state.v1.schema.json` |
+| Gifts, spawn, TTS, config | [docs/gift-ladder.md](./docs/gift-ladder.md) + `config/ladder.v1.toml` |
+| Bridge, fila, Unity listener | [docs/events.md](./docs/events.md) + `schemas/live-event.v1.schema.json` |
+| Overlay, Studio, áudio | [docs/overlay-capture.md](./docs/overlay-capture.md) + `schemas/overlay-state.v1.schema.json` |
 
-Regras que já estão decididas:
+## Done
 
-- O jogo nunca fala com o TikTok. Só consome `LiveEvent` v1.
-- O **Bot** é state machine. LLM fora do loop de gameplay.
-- Ladder e overlay state são JSON/TOML editáveis sem rebuild.
-- Aceite da Fase 1: 15 min de live teste sem teclado.
+Issue fechado só quando **Validate** do body passou e o out of scope ficou intocado.

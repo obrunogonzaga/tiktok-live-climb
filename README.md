@@ -131,7 +131,7 @@ Ainda não há pasta Unity. Scaffold é a [#2](https://github.com/obrunogonzaga/
 
 ## Fase 1 — issues
 
-Aceite: **15 min de live teste sem teclado**. Milestone: [Fase 1 — Vertical slice](https://github.com/obrunogonzaga/tiktok-live-climb/milestone/1).
+Cada issue AFK é um **prompt** (Before / Build / Out of scope / Validate). Locks globais em [AGENTS.md](./AGENTS.md). Fixtures em `fixtures/events/`.
 
 | # | O quê | Tipo |
 | --- | --- | --- |

@@ -21,21 +21,21 @@ output/imagegen/
 # Cursor / editor
 .cursor/
 
-# --- Unity (github/gitignore Unity.gitignore) ---
+# --- Unity (any project folder, e.g. game/) ---
 .utmp/
-/[Ll]ibrary/
-/[Tt]emp/
-/[Oo]bj/
-/[Bb]uild/
-/[Bb]uilds/
-/[Ll]ogs/
-/[Uu]ser[Ss]ettings/
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
 *.log
 
-/[Mm]emoryCaptures/
-/[Rr]ecordings/
+game/[Mm]emoryCaptures/
+game/[Rr]ecordings/
 
-/[Aa]ssets/Plugins/Editor/JetBrains*
+game/[Aa]ssets/Plugins/Editor/JetBrains*
 *.DotSettings.user
 
 .vs/
@@ -75,17 +75,17 @@ mono_crash.*
 crashlytics-build.properties
 InitTestScene*.unity*
 
-/ServerData
-/[Aa]ssets/StreamingAssets/aa*
-/[Aa]ssets/AddressableAssetsData/link.xml*
-/[Aa]ssets/Addressables_Temp*
-/[Aa]ssets/AddressableAssetsData/*/*.bin*
+game/ServerData
+game/[Aa]ssets/StreamingAssets/aa*
+game/[Aa]ssets/AddressableAssetsData/link.xml*
+game/[Aa]ssets/Addressables_Temp*
+game/[Aa]ssets/AddressableAssetsData/*/*.bin*
 
-/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Flow/UnitOptions.db
-/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Flow/UnitOptions.db.meta
-/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers
-/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers.meta
+game/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Flow/UnitOptions.db
+game/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Flow/UnitOptions.db.meta
+game/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers
+game/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers.meta
 
-/[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
-/UIElementsSchema/
-/[Aa]ssets/[Ss]ceneDependencyCache*
+game/[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+game/UIElementsSchema/
+game/[Aa]ssets/[Ss]ceneDependencyCache*

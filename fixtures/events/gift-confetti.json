@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "01TEST00000000000000000003",
+  "type": "gift",
+  "occurredAt": "2026-09-06T00:00:02.000Z",
+  "receivedAt": "2026-09-06T00:00:02.050Z",
+  "source": { "bridge": "synthetic" },
+  "user": { "id": "1003", "handle": "bia", "nickname": "Bia" },
+  "payload": {
+    "giftId": "5879",
+    "giftName": "Confetti",
+    "coins": 100,
+    "repeat": 1,
+    "comboFinished": true
+  }
+}

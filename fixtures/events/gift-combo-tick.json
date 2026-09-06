@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "01TEST00000000000000000004",
+  "type": "gift",
+  "occurredAt": "2026-09-06T00:00:03.000Z",
+  "receivedAt": "2026-09-06T00:00:03.020Z",
+  "source": { "bridge": "synthetic" },
+  "user": { "id": "1001", "handle": "ana", "nickname": "Ana" },
+  "payload": {
+    "giftId": "5655",
+    "giftName": "Rose",
+    "coins": 1,
+    "repeat": 4,
+    "comboId": "c-ana-5655-test",
+    "comboFinished": false
+  }
+}
