@@ -189,3 +189,18 @@ Extensão de `payload` **depois** da ladder, ainda `schemaVersion: 1` (campo opc
 ## Replay / teste
 
 `source.bridge: "synthetic"` + `POST /v1/events` com o envelope já válido. Fixture: `fixtures/events/` (ainda não existe). Live de 15 min sem TikTok usa só isso.
+
+## Progresso da subida contínua
+
+Unity → WS `/game` continua aceitando o formato `{index,status}`. No modo
+contínuo, a mensagem inclui opcionalmente o par `height`/`record`:
+
+```json
+{"index":1,"status":"climbing","height":25,"record":32}
+```
+
+São metros inteiros não negativos; record deve ser ≥ height. O Orchestrator
+rejeita par incompleto, tipos inválidos e propriedades desconhecidas. Alterar
+somente a altura também publica um novo OverlayState, respeitando o limite
+vigente de atualização. Os campos são opcionais no schema v1; os nomes de
+actions e o contrato HTTP LiveEvent não mudam.

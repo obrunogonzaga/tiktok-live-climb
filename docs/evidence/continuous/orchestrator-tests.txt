@@ -1,0 +1,93 @@
+
+> @tiktok-live-climb/orchestrator@0.1.0 test
+> node --test --experimental-test-coverage
+
+TAP version 13
+# Subtest: postEvents_validRose_sendsSmallActionAndInitialOverlayState
+ok 1 - postEvents_validRose_sendsSmallActionAndInitialOverlayState
+  ---
+  duration_ms: 198.590375
+  type: 'test'
+  ...
+# Subtest: postEvents_invalidFixture_returns400AndDoesNotSendGameAction
+ok 2 - postEvents_invalidFixture_returns400AndDoesNotSendGameAction
+  ---
+  duration_ms: 269.030334
+  type: 'test'
+  ...
+# Subtest: overlayHttp_getAndHead_servesAssetsAndRejectsTraversal
+ok 3 - overlayHttp_getAndHead_servesAssetsAndRejectsTraversal
+  ---
+  duration_ms: 101.447875
+  type: 'test'
+  ...
+# Subtest: postEvents_comboTickAndDone_countsRepeatOnceAndSpawnsOnce
+ok 4 - postEvents_comboTickAndDone_countsRepeatOnceAndSpawnsOnce
+  ---
+  duration_ms: 593.435791
+  type: 'test'
+  ...
+# Subtest: postEvents_finishedGift_setsAndExpiresToastWithoutTickOrDuplicate
+ok 5 - postEvents_finishedGift_setsAndExpiresToastWithoutTickOrDuplicate
+  ---
+  duration_ms: 2762.063584
+  type: 'test'
+  ...
+# Subtest: postEvents_newIdSameSemanticGift_isDeduplicated
+ok 6 - postEvents_newIdSameSemanticGift_isDeduplicated
+  ---
+  duration_ms: 228.189333
+  type: 'test'
+  ...
+# Subtest: postEvents_namedAndFallbackFixtures_sendOnlySupportedActions
+ok 7 - postEvents_namedAndFallbackFixtures_sendOnlySupportedActions
+  ---
+  duration_ms: 200.47225
+  type: 'test'
+  ...
+# Subtest: postEvents_spawnCap_dropsNinthSpawnButCountsGift
+ok 8 - postEvents_spawnCap_dropsNinthSpawnButCountsGift
+  ---
+  duration_ms: 55.246958
+  type: 'test'
+  ...
+# Subtest: gameRound_validMessageUpdatesOverlayAndInvalidMessageIsIgnored
+ok 9 - gameRound_validMessageUpdatesOverlayAndInvalidMessageIsIgnored
+  ---
+  duration_ms: 94.134458
+  type: 'test'
+  ...
+# Subtest: gameRound_heightOnlyChange_updatesProgressWithoutChangingRound
+ok 10 - gameRound_heightOnlyChange_updatesProgressWithoutChangingRound
+  ---
+  duration_ms: 286.302708
+  type: 'test'
+  ...
+# Subtest: gameRound_invalidProgress_isIgnoredWithoutPublishing
+ok 11 - gameRound_invalidProgress_isIgnoredWithoutPublishing
+  ---
+  duration_ms: 207.521875
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5282.012125
+# start of coverage report
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# file                  | line % | branch % | funcs % | uncovered lines
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# src                   |        |          |         |
+#  ladder.js            |  87.23 |    70.37 |  100.00 | 13-14 21-22 36-37 68-69 73-74 79-80 121-126
+#  orchestrator.js      |  87.68 |    76.68 |   93.75 | 48-49 53-57 78-79 96-98 109-110 150-151 155-156 229-230 235-236 269-272 289-290 340-341 356-357 378-379 415-416 420-421 429-430 501 503-505 507-511 517-519 525-528 534-536 549-551 565-567 571-573 589-590 595-596 623-625 638-639 647-653 676-677
+# test                  |        |          |         |
+#  orchestrator.test.js |  95.41 |    97.87 |   84.09 | 40-42 47-48 68-72 80-82 100-101 106-107 110-112
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# all files             |  90.27 |    79.78 |   90.76 |
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# end of coverage report

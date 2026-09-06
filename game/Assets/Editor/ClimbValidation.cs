@@ -4,6 +4,7 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 [InitializeOnLoad]
 public static class ClimbValidation
@@ -30,6 +31,11 @@ public static class ClimbValidation
             PlayerSettings.fullScreenMode != FullScreenMode.Windowed || !PlayerSettings.runInBackground)
             throw new InvalidOperationException("Player settings do not match issue #2.");
         EditorSceneManager.OpenScene("Assets/Scenes/Climb.unity");
+        if (UnityEngine.Object.FindFirstObjectByType<ContinuousTower>() != null)
+        {
+            ContinuousValidation.Run();
+            return;
+        }
         SessionState.SetBool(ActiveKey, true);
         initialized = false;
         captured = false;
@@ -77,22 +83,46 @@ public static class ClimbValidation
             EditorApplication.delayCall += () => EditorApplication.Exit(passed ? 0 : 1);
     }
 
+    public static double LastRenderMilliseconds { get; private set; }
+    public static double LastReadbackMilliseconds { get; private set; }
+    public static double LastEncodeMilliseconds { get; private set; }
+
     public static void Capture(string path = "Logs/issue2-playmode.png")
     {
         var camera = Camera.main;
         var target = new RenderTexture(1080, 1920, 24);
         var previous = RenderTexture.active;
-        camera.targetTexture = target;
-        camera.Render();
-        RenderTexture.active = target;
+        var previousTarget = camera.targetTexture;
+        float previousAspect = camera.aspect;
         var texture = new Texture2D(1080, 1920, TextureFormat.RGB24, false);
-        texture.ReadPixels(new Rect(0, 0, 1080, 1920), 0, 0);
-        texture.Apply();
-        Directory.CreateDirectory("Logs");
-        File.WriteAllBytes(path, texture.EncodeToPNG());
-        camera.targetTexture = null;
-        RenderTexture.active = previous;
-        UnityEngine.Object.DestroyImmediate(texture);
-        UnityEngine.Object.DestroyImmediate(target);
+        try
+        {
+            var timer = System.Diagnostics.Stopwatch.StartNew();
+            camera.aspect = 1080f / 1920f;
+            if (GraphicsSettings.currentRenderPipeline != null)
+                RenderPipeline.SubmitRenderRequest(camera, new RenderPipeline.StandardRequest { destination = target });
+            else
+            {
+                camera.targetTexture = target;
+                camera.Render();
+            }
+            LastRenderMilliseconds = timer.Elapsed.TotalMilliseconds; timer.Restart();
+            RenderTexture.active = target;
+            texture.ReadPixels(new Rect(0, 0, 1080, 1920), 0, 0);
+            texture.Apply();
+            LastReadbackMilliseconds = timer.Elapsed.TotalMilliseconds; timer.Restart();
+            var bytes = texture.EncodeToPNG();
+            LastEncodeMilliseconds = timer.Elapsed.TotalMilliseconds;
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            File.WriteAllBytes(path, bytes);
+        }
+        finally
+        {
+            camera.targetTexture = previousTarget;
+            camera.aspect = previousAspect;
+            RenderTexture.active = previous;
+            UnityEngine.Object.DestroyImmediate(texture);
+            UnityEngine.Object.DestroyImmediate(target);
+        }
     }
 }

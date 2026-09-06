@@ -1,0 +1,12 @@
+{
+  "source": "Live Chrome DOM and screenshot through CUA, local overlay on port 8790",
+  "desktopViewport": [1080, 1920],
+  "roundTextObserved": "ROUND 1 · 32 m · REC 32 m",
+  "roundTextBounds": {"x": 345, "y": 186, "width": 570, "height": 28},
+  "roundOverflow": false,
+  "ladderBounds": {"x": 24, "y": 160, "width": 276, "height": 560},
+  "ladderOverflow": false,
+  "mobileViewport": [360, 640],
+  "mobileScreenshotReviewed": true,
+  "notes": "Seven gift rows and continuous height/record remained legible; viewport override restored after QA."
+}

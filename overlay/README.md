@@ -7,7 +7,7 @@ A página é transparente e muda de escala proporcionalmente em viewports menore
 
 - Ladder: x 24–300, y 160–720.
 - Round: x 320–940, y 160–240; indicador `bridge?` dentro desta caixa.
-- Toast: x 200–880, y 760–900.
+- Toast: x 24–300, y 760–940; texto quebra dentro da coluna para permanecer legível em 1080×1920 e em viewports menores.
 
 Sem áudio, comentários, likes, placar ou Bot em HTML. O WS `/overlay` é a fonte de estado; as sete linhas iniciais usam os valores v1 para continuar visíveis mesmo antes da primeira conexão.
 

@@ -1,0 +1,60 @@
+{
+  "requests": [
+    {
+      "fixture": "gift-rose.json",
+      "http": 202,
+      "response": {
+        "accepted": true,
+        "duplicate": false
+      }
+    },
+    {
+      "fixture": "gift-combo-done.json",
+      "http": 202,
+      "response": {
+        "accepted": true,
+        "duplicate": false
+      }
+    },
+    {
+      "fixture": "gift-perfume.json",
+      "http": 202,
+      "response": {
+        "accepted": true,
+        "duplicate": false
+      }
+    },
+    {
+      "fixture": "gift-confetti.json",
+      "http": 202,
+      "response": {
+        "accepted": true,
+        "duplicate": false
+      }
+    },
+    {
+      "fixture": "invalid-missing-type.json",
+      "http": 400,
+      "response": {
+        "error": "invalid_event"
+      }
+    }
+  ],
+  "beforeInvalid": {
+    "connected": true,
+    "small": 2,
+    "medium": 1,
+    "smoke": 1,
+    "round": 5,
+    "status": "climbing"
+  },
+  "afterInvalid": {
+    "connected": true,
+    "small": 2,
+    "medium": 1,
+    "smoke": 1,
+    "round": 5,
+    "status": "climbing"
+  },
+  "invalidNoSpawn": true
+}
