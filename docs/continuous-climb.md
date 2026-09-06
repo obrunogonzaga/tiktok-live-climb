@@ -3,7 +3,9 @@
 Bruno aprovou a direção visual do estudo e, em seguida, a proposta de subida
 contínua com trechos reaproveitados, câmera acompanhando o Bot, altura/recorde
 e novo round após queda definitiva. Isso substitui a câmera parada e o topo
-fixo da versão anterior. O OK não autoriza merge automático.
+fixo da versão anterior. Após a entrega das evidências, Bruno autorizou o merge
+do PR #18 condicionado à revisão e às verificações finais. Essa autorização
+se aplica somente a esta entrega.
 
 ## Jogar
 
