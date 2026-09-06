@@ -3,7 +3,9 @@
 Live 9:16 em que um **bot sobe sozinho**. Gifts do chat viram obstáculos, empurrões e boss; um TTS agradece o doador. Zero operação durante a live — só ligar o stream.
 
 **Status:** spec v1 · ainda sem código.  
-**Owner:** Bruno Gonzaga Santos
+**Owner:** Bruno Gonzaga Santos  
+**Repo:** https://github.com/obrunogonzaga/tiktok-live-climb  
+**Tracker:** [Issues](https://github.com/obrunogonzaga/tiktok-live-climb/issues) · [Fase 1](https://github.com/obrunogonzaga/tiktok-live-climb/milestone/1)
 
 ## Docs
 
