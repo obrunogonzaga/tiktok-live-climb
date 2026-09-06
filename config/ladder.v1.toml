@@ -1,0 +1,119 @@
+# Ladder v1 — editável sem rebuild Unity.
+# Docs: docs/gift-ladder.md
+# Recarregar: watch deste arquivo ou SIGHUP no orchestrator.
+
+version = 1
+
+[tts]
+min_interval_ms = 2500
+cache_ttl_seconds = 600
+follow_throttle_ms = 15000
+
+[spawn]
+max_new_obstacles_per_second = 8
+
+[[gifts]]
+slug = "rose"
+gift_names = ["Rose", "GG", "TikTok", "Ice Cream Cone", "Heart", "Thumbs Up"]
+coins = 1
+action = "SpawnObstacle.Small"
+tts = "Valeu, {nome}!"
+show_on_overlay = true
+label_pt = "Rosa"
+
+[[gifts]]
+slug = "finger_heart"
+gift_names = ["Finger Heart"]
+coins = 5
+action = "SpawnObstacle.SmallKnockback"
+tts = "{nome} mandou!"
+show_on_overlay = true
+label_pt = "Coração"
+
+[[gifts]]
+slug = "perfume"
+gift_names = ["Perfume"]
+coins = 20
+action = "SpawnSmoke"
+tts = "Cheiro de caos, {nome}!"
+show_on_overlay = true
+label_pt = "Perfume"
+
+[[gifts]]
+slug = "confetti"
+gift_names = ["Confetti"]
+coins = 100
+action = "SpawnObstacle.Medium"
+tts = "{nome} bagunçou a torre!"
+show_on_overlay = true
+label_pt = "Confete"
+
+[[gifts]]
+slug = "galaxy"
+gift_names = ["Galaxy"]
+coins = 1000
+action = "Knockback.Strong"
+tts = "Galáxia do {nome}!"
+show_on_overlay = true
+label_pt = "Galáxia"
+
+[[gifts]]
+slug = "sports_car"
+gift_names = ["Sports Car"]
+coins = 7000
+action = "MultiSpawn.Wind"
+tts = "{nome} atropelou a live!"
+show_on_overlay = true
+label_pt = "Carro"
+
+[[gifts]]
+slug = "lion"
+gift_names = ["Lion"]
+coins = 29999
+action = "SpawnBoss"
+tts = "Leão! Obrigado, {nome}!"
+show_on_overlay = true
+label_pt = "Leão"
+highlight_round = true
+
+[[fallback]]
+min_coins = 1
+max_coins = 4
+action = "SpawnObstacle.Small"
+tts = "Valeu, {nome}!"
+
+[[fallback]]
+min_coins = 5
+max_coins = 19
+action = "SpawnObstacle.SmallKnockback"
+tts = "{nome} mandou!"
+
+[[fallback]]
+min_coins = 20
+max_coins = 99
+action = "SpawnSmoke"
+tts = "{nome} complicou!"
+
+[[fallback]]
+min_coins = 100
+max_coins = 499
+action = "SpawnObstacle.Medium"
+tts = "{nome} bagunçou a torre!"
+
+[[fallback]]
+min_coins = 500
+max_coins = 1999
+action = "Knockback.Strong"
+tts = "{nome} pesou!"
+
+[[fallback]]
+min_coins = 2000
+max_coins = 9999
+action = "MultiSpawn.Wind"
+tts = "{nome} bagunçou geral!"
+
+[[fallback]]
+min_coins = 10000
+max_coins = 999999
+action = "SpawnBoss"
+tts = "{nome} mandou o caos!"

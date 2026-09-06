@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tiktok-live-climb.local/schemas/overlay-state.v1.schema.json",
+  "title": "OverlayState",
+  "description": "Estado que o overlay HTML pinta. Máx 10 Hz. Docs: docs/overlay-capture.md",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "session", "round", "ladder", "topGifters", "lastDonors", "toast", "bridge"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "session": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "startedAt"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "startedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "round": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["index", "status"],
+      "properties": {
+        "index": { "type": "integer", "minimum": 1 },
+        "status": {
+          "type": "string",
+          "enum": ["idle", "climbing", "fell", "summit"]
+        },
+        "startedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "ladder": {
+      "type": "array",
+      "maxItems": 7,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["slug", "labelPt", "coins", "countSession"],
+        "properties": {
+          "slug": { "type": "string" },
+          "labelPt": { "type": "string" },
+          "coins": { "type": "integer", "minimum": 0 },
+          "countSession": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "topGifters": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["handle", "nickname", "coins", "rank"],
+        "properties": {
+          "handle": { "type": "string" },
+          "nickname": { "type": "string" },
+          "coins": { "type": "integer", "minimum": 0 },
+          "rank": { "type": "integer", "minimum": 1, "maximum": 3 }
+        }
+      }
+    },
+    "lastDonors": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["nickname", "giftLabel", "coins", "occurredAt"],
+        "properties": {
+          "nickname": { "type": "string" },
+          "giftLabel": { "type": "string" },
+          "coins": { "type": "integer", "minimum": 0 },
+          "occurredAt": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    "toast": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["kind", "text", "expiresAt"],
+      "properties": {
+        "kind": { "type": "string", "enum": ["tts", "spawn", "bridge"] },
+        "text": { "type": "string", "maxLength": 80 },
+        "expiresAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "bridge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["connected"],
+      "properties": {
+        "connected": { "type": "boolean" }
+      }
+    }
+  }
+}

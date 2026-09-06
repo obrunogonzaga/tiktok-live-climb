@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tiktok-live-climb.local/schemas/live-event.v1.schema.json",
+  "title": "LiveEvent",
+  "description": "Envelope interno v1. O jogo só consome isto. Docs: docs/events.md",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "type", "occurredAt", "receivedAt", "source", "payload"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "ULID ou UUID. Idempotência no orchestrator."
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "gift",
+        "like",
+        "follow",
+        "share",
+        "comment",
+        "live.connected",
+        "live.disconnected",
+        "error"
+      ]
+    },
+    "occurredAt": { "type": "string", "format": "date-time" },
+    "receivedAt": { "type": "string", "format": "date-time" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bridge"],
+      "properties": {
+        "bridge": {
+          "type": "string",
+          "enum": ["tikfinity", "native", "replay", "synthetic"]
+        },
+        "raw": { "type": "object" }
+      }
+    },
+    "user": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "handle", "nickname"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "handle": { "type": "string", "minLength": 1 },
+        "nickname": { "type": "string", "minLength": 1 },
+        "avatarUrl": { "type": "string", "format": "uri" }
+      }
+    },
+    "payload": { "type": "object" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "type": { "enum": ["gift", "like", "follow", "share", "comment"] } }
+      },
+      "then": { "required": ["user"] }
+    },
+    {
+      "if": { "properties": { "type": { "const": "gift" } } },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["giftId", "giftName", "coins", "repeat"],
+            "properties": {
+              "giftId": { "type": "string", "minLength": 1 },
+              "giftName": { "type": "string", "minLength": 1 },
+              "slug": { "type": "string", "minLength": 1 },
+              "coins": { "type": "integer", "minimum": 0 },
+              "repeat": { "type": "integer", "minimum": 1 },
+              "comboId": { "type": "string" },
+              "comboFinished": { "type": "boolean" },
+              "action": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "type": { "const": "like" } } },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["count"],
+            "properties": {
+              "count": { "type": "integer", "minimum": 1 },
+              "userTotal": { "type": "integer", "minimum": 0 }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "type": { "enum": ["follow", "share"] } } },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {}
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "type": { "const": "comment" } } },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["text"],
+            "properties": {
+              "text": { "type": "string" },
+              "command": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "type": { "enum": ["live.connected", "live.disconnected"] } }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "roomId": { "type": "string" },
+              "reason": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "type": { "const": "error" } } },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["code", "message", "retryable"],
+            "properties": {
+              "code": { "type": "string", "minLength": 1 },
+              "message": { "type": "string" },
+              "retryable": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    }
+  ]
+}
