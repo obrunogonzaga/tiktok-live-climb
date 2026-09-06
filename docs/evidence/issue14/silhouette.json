@@ -1,0 +1,41 @@
+{
+  "method": "Read-only RGB mask R>100 G>125 B>145 on original Unity frames; distinct white capsule, excludes stone/cyan/magenta. Edge uncertainty +/-2px.",
+  "stages": {
+    "start": {
+      "bounds": [
+        355,
+        1029,
+        449,
+        1246
+      ],
+      "heightPx": 217,
+      "widthPx": 94
+    },
+    "middle": {
+      "bounds": [
+        612,
+        639,
+        698,
+        841
+      ],
+      "heightPx": 202,
+      "widthPx": 86
+    },
+    "summit": {
+      "bounds": [
+        657,
+        335,
+        738,
+        521
+      ],
+      "heightPx": 186,
+      "widthPx": 81
+    }
+  },
+  "allFrames": {
+    "count": 646,
+    "minHeight": 186,
+    "maxHeight": 218,
+    "safeViolations": []
+  }
+}

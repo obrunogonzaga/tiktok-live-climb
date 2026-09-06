@@ -1,0 +1,14 @@
+Unity camera render 1080x1920; top-left projected renderer bounds (conservative).
+start: frame=0 position=(-0.22, 0.73, -1.05) bounds=(329.95, 1028.23)..(472.88, 1249.32) height=221.1px
+landed platform=1 t=0.64 position=(-0.55, 1.38, -0.30)
+landed platform=2 t=1.26 position=(0.84, 2.03, 0.30)
+landed platform=3 t=1.88 position=(-0.55, 2.68, 0.90)
+landed platform=4 t=2.50 position=(0.84, 3.33, 1.49)
+middle: frame=38 position=(0.79, 3.46, 1.52) bounds=(579.97, 631.78)..(728.67, 845.36) height=213.6px
+landed platform=5 t=3.12 position=(-0.54, 3.98, 2.10)
+landed platform=6 t=3.74 position=(0.85, 4.63, 2.70)
+landed platform=7 t=4.36 position=(-0.54, 5.28, 3.29)
+landed platform=8 t=4.98 position=(0.54, 5.93, 3.76)
+summit: frame=75 position=(0.54, 5.93, 3.76) bounds=(632.37, 324.59)..(762.07, 531.76) height=207.2px
+PASS Composition_play30Seconds_landsOnEightPlatformsAndResets gameSeconds=43.00 realSeconds=30.02 rounds=0->7 landings=8/8 frames=646 fps=15
+all-frame bounds=(308.14, 246.78)..(781.60, 1250.77) safe=True cameraFixed=True ordered=True observedSummit=True

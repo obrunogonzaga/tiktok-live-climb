@@ -1,0 +1,1 @@
+PASS Composition_belowSpawn_fallsAndResets injectedY=spawnY-3 observedFell=True rounds=0->1 state=Climb position=(-0.20, 0.72, -1.10)

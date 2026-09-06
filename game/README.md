@@ -1,45 +1,66 @@
-# Greybox climb — issue #2
+# Climb — composição candidata da issue #14
 
-Abra esta pasta no Unity **6000.6.0f1** (Unity 6, template Universal 3D/URP).
-Abra `Assets/Scenes/Climb.unity` e selecione **Game → 9:16** (ou resolução fixa 1080×1920).
+Abra esta pasta no Unity **6000.6.0f1** (Unity 6 / URP), abra
+`Assets/Scenes/Climb.unity` e selecione Game em **1080×1920**.
+Clique **Play**, sem teclado: o Bot sobe os oito apoios, chega ao topo,
+celebra e reinicia. `Round Index` conta os rounds concluídos a partir de zero.
 
-1. Selecione `Bot` na Hierarchy e clique **Play**. Não use teclado.
-2. Observe a cápsula subir as oito plataformas e pular o obstáculo.
-3. No topo, ela celebra brevemente e volta ao spawn. Confira `Round Index` no Inspector e o log de round na Console.
-4. Para exercitar queda, durante Play altere o Y do Bot para -3 no Inspector: ele deve voltar ao spawn e incrementar o round.
+A câmera é fixa em perspectiva. O Player usa **1080×1920 Windowed** e roda
+em segundo plano. Bot e materiais são provisórios; a composição aguarda
+aprovação visual do Bruno. [Parâmetros e evidências](../docs/issue14-composition.md).
 
-A câmera é fixa; o Player abre em 1080×1920 **Windowed**, com execução em segundo plano. Não há HUD nesta issue.
+## Recriar e validar
 
-## Verificação reproduzível
+**Climb → Rebuild tower composition** recria a cena e reinstala os três
+prefabs/cliente de eventos. Sobrescreve edições manuais da cena; não é
+necessário para abrir ou jogar. Ajuste o gerador para mudanças reproduzíveis.
 
-**Climb → Validate 30 seconds** entra em PlayMode sem input, acompanha altura, estados e rounds, salva o resultado em `Logs/issue2-playmode.txt` e uma captura 1080×1920 em `Logs/issue2-playmode.png`. `Logs/` não é versionado. O playtest visual do Bruno continua sendo o gate do merge.
+**Climb → Validate composition** reabre a cena, observa os oito pousos na
+frequência da física e grava pelo menos 30 segundos de PlayMode sem input.
+Salva frames reais 1080×1920 em `Logs/issue14-frames/`, capturas de
+início/meio/topo e relatório em `../docs/evidence/issue14/`. As capturas são
+frames da mesma gravação, sem render externo. O teste verifica câmera fixa,
+safe zone, oito apoios e incremento do round; não substitui o OK visual.
 
-Também pode executar pelo terminal, com o projeto fechado no editor:
+**Climb → Validate fall reset** injeta separadamente uma posição abaixo do
+spawn e verifica `fell` seguido de incremento do round.
+
+Com o projeto fechado no editor, a partir da raiz do repo:
 
 ```sh
-"/Applications/Unity/Hub/Editor/6000.6.0f1/Unity.app/Contents/MacOS/Unity" \
-  -batchmode -projectPath "$PWD/game" \
-  -executeMethod ClimbValidation.Run -logFile /tmp/climb-playmode.log
+UNITY='/Applications/Unity/Hub/Editor/6000.6.0f1/Unity.app/Contents/MacOS/Unity'
+"$UNITY" -batchmode -projectPath "$PWD/game" \
+  -executeMethod CompositionValidation.Run -logFile /tmp/climb-composition.log
+"$UNITY" -batchmode -projectPath "$PWD/game" \
+  -executeMethod CompositionFallValidation.Run -logFile /tmp/climb-fall.log
+ffmpeg -framerate 15 -i game/Logs/issue14-frames/%05d.png \
+  -c:v libx264 -crf 23 -pix_fmt yuv420p -movflags +faststart \
+  game/Logs/issue14-playthrough.mp4
 ```
 
-Execute a partir da raiz do repositório. Não use `-quit`: a verificação encerra o editor após os 30 segundos.
+Os validadores encerram o editor. Não passe `-quit`. A captura usa
+`Time.captureDeltaTime=1/15` somente durante a validação; o relatório separa
+tempo de jogo de tempo real. O validador antigo `Climb/Validate 30 seconds`
+é específico da rota greybox da #2; use o de composição nesta cena.
 
-**Climb → Rebuild greybox scene** recria a cena e as configurações deste greybox; sobrescreve edições na cena. Não é necessário para jogar.
+## Eventos e Overlay
 
-## Eventos sintéticos — issue #3
+Com Node 22, execute `npm ci && npm start` em `orchestrator/` e clique Play.
+O cliente usa `ws://127.0.0.1:8766/game` e reconecta automaticamente.
+Abra o Overlay HTML transparente em `http://127.0.0.1:8790/` a 1080×1920.
 
-Com Node 22, execute `npm ci && npm start` em `orchestrator/`, depois **Play** na cena `Climb`.
-O componente `GameEventClient` conecta automaticamente a `ws://127.0.0.1:8766/game` e reconecta se o processo reiniciar.
-
-Na raiz do repositório:
+Na raiz do repo:
 
 ```sh
 curl -sS -H 'Content-Type: application/json' \
   --data-binary @fixtures/events/gift-rose.json http://127.0.0.1:8765/v1/events
 ```
 
-Rosa cria um cubo pequeno, Confete um cubo maior e Perfume uma esfera placeholder. Objetos aparecem à frente do Bot e duram seis segundos. Os contadores `Small Count`, `Medium Count` e `Smoke Count` no Inspector e os logs `SPAWN` permitem conferir os fixtures, sem exibir dados do viewer.
+Rosa cria Small, Perfume cria Smoke e Confete cria Medium. Contadores no
+Inspector de `GameEventClient` e logs `SPAWN` confirmam cada action. Objetos
+expiram após seis segundos. Reenvio do mesmo fixture é deduplicado; reinicie
+o Orchestrator para repetir uma sessão sintética do zero.
 
-O jogo publica `{index,status}` no mesmo WS. `index` identifica o round atual a partir de 1; `Round Index` do Bot continua contando rounds concluídos a partir de 0. Não há HUD no Unity.
-
-Após recriar o greybox por **Climb → Rebuild greybox scene**, execute **Climb → Install event client** para reinstalar os prefabs e a conexão.
+Unity publica `{index,status}` em `/game`; o Overlay numera rounds a partir
+de 1. Não há HUD Unity. O toast fica na coluna esquerda, fora da rota,
+conforme o ajuste autorizado na #14.

@@ -76,7 +76,7 @@ Superfícies (todas na safe zone):
 | --- | --- | --- |
 | Ladder | x 24–300, y 160–720 | 7 degraus: ícone/emoji, label PT, coins, count da **Sessão** |
 | Round HUD | x 320–940, y 160–240 | round #, status (`climbing` / `fell` / `summit`) |
-| Toast TTS | x 200–880, y 760–900 | 1 linha, some em 2,5 s. Só texto (voz é outro canal) |
+| Toast TTS | x 24–300, y 760–940 | texto quebra dentro da coluna, some em 2,5 s. Só texto (voz é outro canal) |
 | Placar / last donors | x 24–360, y 1000–1260 | top 3 da sessão + 3 últimos gifts |
 
 Não desenhar: comentários, likes, follow list (o TikTok já desenha). Não desenhar o **Bot**.

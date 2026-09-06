@@ -1,0 +1,81 @@
+
+> @tiktok-live-climb/orchestrator@0.1.0 test
+> node --test --experimental-test-coverage
+
+TAP version 13
+# Subtest: postEvents_validRose_sendsSmallActionAndInitialOverlayState
+ok 1 - postEvents_validRose_sendsSmallActionAndInitialOverlayState
+  ---
+  duration_ms: 68.746667
+  type: 'test'
+  ...
+# Subtest: postEvents_invalidFixture_returns400AndDoesNotSendGameAction
+ok 2 - postEvents_invalidFixture_returns400AndDoesNotSendGameAction
+  ---
+  duration_ms: 181.486209
+  type: 'test'
+  ...
+# Subtest: overlayHttp_getAndHead_servesAssetsAndRejectsTraversal
+ok 3 - overlayHttp_getAndHead_servesAssetsAndRejectsTraversal
+  ---
+  duration_ms: 26.395375
+  type: 'test'
+  ...
+# Subtest: postEvents_comboTickAndDone_countsRepeatOnceAndSpawnsOnce
+ok 4 - postEvents_comboTickAndDone_countsRepeatOnceAndSpawnsOnce
+  ---
+  duration_ms: 475.20725
+  type: 'test'
+  ...
+# Subtest: postEvents_finishedGift_setsAndExpiresToastWithoutTickOrDuplicate
+ok 5 - postEvents_finishedGift_setsAndExpiresToastWithoutTickOrDuplicate
+  ---
+  duration_ms: 2744.261958
+  type: 'test'
+  ...
+# Subtest: postEvents_newIdSameSemanticGift_isDeduplicated
+ok 6 - postEvents_newIdSameSemanticGift_isDeduplicated
+  ---
+  duration_ms: 180.663375
+  type: 'test'
+  ...
+# Subtest: postEvents_namedAndFallbackFixtures_sendOnlySupportedActions
+ok 7 - postEvents_namedAndFallbackFixtures_sendOnlySupportedActions
+  ---
+  duration_ms: 199.622458
+  type: 'test'
+  ...
+# Subtest: postEvents_spawnCap_dropsNinthSpawnButCountsGift
+ok 8 - postEvents_spawnCap_dropsNinthSpawnButCountsGift
+  ---
+  duration_ms: 59.467708
+  type: 'test'
+  ...
+# Subtest: gameRound_validMessageUpdatesOverlayAndInvalidMessageIsIgnored
+ok 9 - gameRound_validMessageUpdatesOverlayAndInvalidMessageIsIgnored
+  ---
+  duration_ms: 48.573208
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4155.974791
+# start of coverage report
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# file                  | line % | branch % | funcs % | uncovered lines
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# src                   |        |          |         | 
+#  ladder.js            |  87.23 |    70.37 |  100.00 | 13-14 21-22 36-37 68-69 73-74 79-80 121-126
+#  orchestrator.js      |  87.25 |    74.16 |   93.65 | 48-49 53-57 78-79 96-98 109-110 113-114 143-144 148-149 222-223 228-229 262-265 281-282 332-333 348-349 370-371 407-408 412-413 421-422 493 495-497 499-503 509-511 517-520 526-528 541-543 557-559 563-565 581-582 587-588 615-617 630-631 639-645 668-669
+# test                  |        |          |         | 
+#  orchestrator.test.js |  95.05 |    97.73 |   83.33 | 40-42 47-48 68-72 80-82 100-101 106-107 110-112
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# all files             |  89.80 |    77.91 |   90.52 | 
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# end of coverage report

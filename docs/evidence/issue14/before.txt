@@ -1,0 +1,1 @@
+PASS Climb_play30Seconds_climbsAndResets elapsed=30.00s maxY=7.12 firstRound=0 round=13 states=Avoid,Climb,Celebrate,Reset position=(1.41, 7.12, 0.00) gameTime=29.90053 frames=284513 paused=False
