@@ -1928,6 +1928,7 @@ GameObject:
   - component: {fileID: 2143097571}
   - component: {fileID: 2143097570}
   - component: {fileID: 2143097569}
+  - component: {fileID: 2143097572}
   m_Layer: 0
   m_Name: Bot
   m_TagString: Untagged
@@ -2014,6 +2015,25 @@ Transform:
   - {fileID: 1155810245}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2143097572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2143097568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11b1283e4590141d4ba4aa951995d06a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameEventClient
+  bot: {fileID: 2143097569}
+  smallPrefab: {fileID: 7504553515202279746, guid: ee6048e302bab4a268a9f2a750f011f6, type: 3}
+  mediumPrefab: {fileID: 1167314975446697404, guid: 4bccc08462ca64593ae2741e2ea3471a, type: 3}
+  smokePrefab: {fileID: 2964295843798979680, guid: 138d47e44776647898695320ca9f4415, type: 3}
+  smallCount: 0
+  mediumCount: 0
+  smokeCount: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
