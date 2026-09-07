@@ -11,17 +11,18 @@ public static class ContinuousValidation
     private static bool initialized;
     private static int frames, lastFrame = -1, firstRound, lastIndex;
     private static float realStart, gameStart, lastProgress, maxHeight;
-    private static bool injectedFall, sawFell;
+    private static bool injectedFall, sawFell, sawResetAtSpawn;
     private static Vector3 spawnPosition;
     private static Rigidbody rebaseProbe;
     private static double probeHeight;
-    private static bool originStable;
+    private static bool originStable, visualSafe;
     private static float maxPoolCoordinate;
     private static double renderMs, readbackMs, encodeMs;
     private static int renderSamples;
-    private static string Output => Path.GetFullPath("../docs/evidence/continuous");
+    private static string Output => Path.GetFullPath(Environment.GetEnvironmentVariable("CLIMB_OUTPUT") ?? "../docs/evidence/continuous");
     private static float Duration => float.TryParse(Environment.GetEnvironmentVariable("CLIMB_SECONDS"), out var v) ? v : 45;
     private static bool Record => Environment.GetEnvironmentVariable("CLIMB_RECORD") == "1";
+    private static bool ContinueAfterFall => Environment.GetEnvironmentVariable("CLIMB_FALL_CONTINUE") == "1";
     private static bool FallTest => Environment.GetEnvironmentVariable("CLIMB_FALL") == "1";
 
     static ContinuousValidation() { EditorApplication.update += Tick; }
@@ -29,7 +30,7 @@ public static class ContinuousValidation
     [MenuItem("Climb/Validate continuous game")]
     public static void Run()
     {
-        initialized = injectedFall = sawFell = false; originStable = true; rebaseProbe = null; frames = 0; lastFrame = -1; maxHeight = maxPoolCoordinate = 0;
+        initialized = injectedFall = sawFell = sawResetAtSpawn = false; originStable = visualSafe = true; rebaseProbe = null; frames = 0; lastFrame = -1; maxHeight = maxPoolCoordinate = 0;
         EditorSceneManager.OpenScene("Assets/Scenes/Climb.unity");
         Directory.CreateDirectory(Output); Directory.CreateDirectory("Logs/continuous-frames");
         foreach (var f in Directory.GetFiles("Logs/continuous-frames", "*.png")) File.Delete(f);
@@ -55,7 +56,7 @@ public static class ContinuousValidation
         if (bot == null || tower == null) return;
         if (!initialized)
         {
-            initialized = true; originStable = true; renderMs = readbackMs = encodeMs = 0; renderSamples = 0; realStart = lastProgress = Time.realtimeSinceStartup; gameStart = Time.time;
+            initialized = true; originStable = visualSafe = true; renderMs = readbackMs = encodeMs = 0; renderSamples = 0; realStart = Time.realtimeSinceStartup; gameStart = lastProgress = Time.time;
             firstRound = bot.RoundIndex; lastIndex = tower.HighestLandedRouteIndex;
             spawnPosition = GameObject.Find("Spawn").transform.position;
             if (Environment.GetEnvironmentVariable("CLIMB_REBASE") != null && !FallTest)
@@ -73,7 +74,7 @@ public static class ContinuousValidation
         }
         if (tower.HighestLandedRouteIndex != lastIndex)
         {
-            lastIndex = tower.HighestLandedRouteIndex; lastProgress = Time.realtimeSinceStartup;
+            lastIndex = tower.HighestLandedRouteIndex; lastProgress = Time.time;
             File.AppendAllText(Output + "/run.txt", $"landed={lastIndex} height={tower.CurrentHeight:F2} record={tower.RecordHeight:F2} worldY={bot.transform.position.y:F2} t={Time.time-gameStart:F2} round={bot.RoundIndex} recycled={tower.Recycles} rebases={tower.Rebases}\n");
         }
         maxHeight = Mathf.Max(maxHeight, tower.CurrentHeight);
@@ -91,8 +92,8 @@ public static class ContinuousValidation
             ClimbValidation.Capture($"Logs/continuous-frames/{frames:00000}.png");
             if (frames >= 15) { renderMs += ClimbValidation.LastRenderMilliseconds; readbackMs += ClimbValidation.LastReadbackMilliseconds; encodeMs += ClimbValidation.LastEncodeMilliseconds; renderSamples++; }
         }
-        if (frames == 0) ClimbValidation.Capture(Output + "/start.png");
-        if (frames == 120) ClimbValidation.Capture(Output + "/middle.png");
+        if (frames == 0) { ClimbValidation.Capture(Output + "/start.png"); visualSafe &= MayaCaptureDiagnostics.Capture(bot, Output + "/start"); }
+        if (frames == 120) { ClimbValidation.Capture(Output + "/middle.png"); visualSafe &= MayaCaptureDiagnostics.Capture(bot, Output + "/middle"); }
         frames++;
         float elapsed = Time.time - gameStart;
         if (FallTest && !injectedFall && maxHeight > (float.TryParse(Environment.GetEnvironmentVariable("CLIMB_FALL_AT"), out var fallAt) ? fallAt : 8))
@@ -103,16 +104,22 @@ public static class ContinuousValidation
             controller.enabled = true; Physics.SyncTransforms();
         }
         sawFell |= bot.RoundStatus == "fell";
-        bool stalled = Time.realtimeSinceStartup - lastProgress > 10;
-        if (!stalled && elapsed < Duration && !(injectedFall && bot.RoundIndex > firstRound)) return;
+        sawResetAtSpawn |= injectedFall && bot.RoundIndex == firstRound + 1 &&
+            Vector3.Distance(bot.transform.position, spawnPosition) < .15f && tower.CurrentHeight < 2;
+        // Capture/render work pauses simulation; it must not count as a gameplay stall.
+        bool stalled = Time.time - lastProgress > 10;
+        if (!stalled && elapsed < Duration && !(injectedFall && bot.RoundIndex > firstRound && !ContinueAfterFall)) return;
         int platformObjects = UnityEngine.Object.FindObjectsByType<ClimbPlatformVisual>(FindObjectsSortMode.None).Length;
         bool bounded = platformObjects == tower.ActivePlatformCount && platformObjects == 32 && tower.ActiveBodyCount == 4;
         bool passed = originStable && !stalled && maxHeight > (FallTest ? 8 : 10) && bounded && tower.RecordHeight >= tower.CurrentHeight;
-        if (FallTest) passed &= sawFell && bot.RoundIndex == firstRound + 1 && tower.CurrentHeight < 2 && tower.RecordHeight >= maxHeight;
+        if (FallTest) passed &= sawFell && bot.RoundIndex == firstRound + 1 && (ContinueAfterFall ? sawResetAtSpawn : tower.CurrentHeight < 2) && tower.RecordHeight >= maxHeight;
         else passed &= bot.RoundIndex == firstRound && tower.Recycles > 0;
         if (Environment.GetEnvironmentVariable("CLIMB_REBASE") != null && !FallTest) passed &= tower.Rebases > 0;
         ClimbValidation.Capture(Output + "/finish.png");
-        File.AppendAllText(Output + "/run.txt", $"{(passed ? "PASS" : "FAIL")} Continuous_play_climbsWithBoundedPools elapsedGame={elapsed:F2} elapsedReal={Time.realtimeSinceStartup-realStart:F2} maxHeight={maxHeight:F2} round={bot.RoundIndex} platforms={platformObjects}/{tower.ActivePlatformCount} bodies={tower.ActiveBodyCount} recycles={tower.Recycles} rebases={tower.Rebases} stalled={stalled} sawFell={sawFell} state={bot.State} position={bot.transform.position} target={tower.GetStandingPosition(tower.HighestLandedRouteIndex+1)} origin={tower.OriginOffset} originStable={originStable} maxPoolLocalY={maxPoolCoordinate}\n");
+        visualSafe &= MayaCaptureDiagnostics.Capture(bot, Output + "/finish");
+        passed &= visualSafe;
+        MayaCaptureDiagnostics.Inspect(bot, Output);
+        File.AppendAllText(Output + "/run.txt", $"{(passed ? "PASS" : "FAIL")} Continuous_play_climbsWithBoundedPools elapsedGame={elapsed:F2} elapsedReal={Time.realtimeSinceStartup-realStart:F2} maxHeight={maxHeight:F2} round={bot.RoundIndex} platforms={platformObjects}/{tower.ActivePlatformCount} bodies={tower.ActiveBodyCount} recycles={tower.Recycles} rebases={tower.Rebases} stalled={stalled} sawFell={sawFell} sawResetAtSpawn={sawResetAtSpawn} state={bot.State} position={bot.transform.position} target={tower.GetStandingPosition(tower.HighestLandedRouteIndex+1)} origin={tower.OriginOffset} originStable={originStable} visualSafe={visualSafe} maxPoolLocalY={maxPoolCoordinate}\n");
         if (renderSamples > 0) File.AppendAllText(Output + "/run.txt", $"Capture timings (Editor, not player FPS): render={renderMs/renderSamples:F1}ms readback={readbackMs/renderSamples:F1}ms PNG={encodeMs/renderSamples:F1}ms n={renderSamples}\n");
         Time.captureDeltaTime = 0; SessionState.SetBool(Active, false); EditorApplication.ExitPlaymode();
         if (Application.isBatchMode) EditorApplication.delayCall += () => EditorApplication.Exit(passed ? 0 : 1);

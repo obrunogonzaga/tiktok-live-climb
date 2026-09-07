@@ -1,0 +1,86 @@
+{
+  "results": [
+    {
+      "fixture": "gift-rose.json",
+      "status": 202,
+      "body": {
+        "accepted": true,
+        "duplicate": false
+      },
+      "observed": {
+        "connected": true,
+        "small": 1,
+        "medium": 0,
+        "smoke": 0,
+        "round": 1,
+        "status": "climbing"
+      }
+    },
+    {
+      "fixture": "gift-perfume.json",
+      "status": 202,
+      "body": {
+        "accepted": true,
+        "duplicate": false
+      },
+      "observed": {
+        "connected": true,
+        "small": 1,
+        "medium": 0,
+        "smoke": 1,
+        "round": 1,
+        "status": "climbing"
+      }
+    },
+    {
+      "fixture": "gift-confetti.json",
+      "status": 202,
+      "body": {
+        "accepted": true,
+        "duplicate": false
+      },
+      "observed": {
+        "connected": true,
+        "small": 1,
+        "medium": 1,
+        "smoke": 1,
+        "round": 1,
+        "status": "climbing"
+      }
+    },
+    {
+      "fixture": "gift-combo-done.json",
+      "status": 202,
+      "body": {
+        "accepted": true,
+        "duplicate": false
+      },
+      "observed": {
+        "connected": true,
+        "small": 2,
+        "medium": 1,
+        "smoke": 1,
+        "round": 1,
+        "status": "climbing"
+      }
+    }
+  ],
+  "invalidStatus": 400,
+  "beforeInvalid": {
+    "connected": true,
+    "small": 2,
+    "medium": 1,
+    "smoke": 1,
+    "round": 1,
+    "status": "climbing"
+  },
+  "afterInvalid": {
+    "connected": true,
+    "small": 2,
+    "medium": 1,
+    "smoke": 1,
+    "round": 1,
+    "status": "climbing"
+  },
+  "invalidNoSpawn": true
+}

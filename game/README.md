@@ -1,11 +1,11 @@
 # Climb — subida contínua
 
 Unity **6000.6.0f1 / URP** → `Assets/Scenes/Climb.unity` → Game **1080×1920** → **Play**.
-O Bot sobe sozinho, a câmera acompanha a hélice e os trechos distantes são
+A Maya ocupa o papel do Bot e sobe sozinha, a câmera acompanha a hélice e os trechos distantes são
 reaproveitados. Queda definitiva reinicia o round; o recorde permanece durante
 a execução. Player em **Windowed**, com execução em segundo plano.
 
-`Climb/Rebuild continuous game` recria a cena atual com os assets do estudo.
+`Climb/Rebuild continuous game` recria a cena atual com a Maya e o kit modular atuais.
 O menu antigo `Climb/Rebuild tower composition` aponta para o mesmo gerador.
 `ReferenceStudy.unity` preserva a referência visual aprovada.
 
@@ -32,5 +32,6 @@ para repetir fixtures do zero. Nenhuma action nova de ajuda foi adicionada.
 queda, reposicionamento de origem, gravação e seus limites estão em
 [docs/continuous-climb.md](../docs/continuous-climb.md).
 
-[Estudo visual e fontes dos assets](../docs/visual-rebuild.md).
-Sem merge automático; a revisão da integração permanece HITL.
+[Maya, kit, medidas e evidências](../docs/issue15-maya.md).
+A composição da #14 foi aprovada e mergeada; o aceite visual final permanece na #17.
+O menu `Climb/Validate Maya import` verifica os dois LODs, materiais, rig e unidades.

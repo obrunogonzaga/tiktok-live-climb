@@ -14,7 +14,9 @@ Game **1080×1920** e clique Play. O Bot sobe sem teclado. Use
 `Climb/Rebuild continuous game` para recriar a cena; o menu antigo
 `Climb/Rebuild tower composition` também chama esse gerador.
 
-O corpo é vertical, com os materiais, céu, nuvens e Bot do estudo aprovado.
+O corpo é vertical, com os materiais, céu e nuvens do estudo aprovado. A #15
+substitui o robô pelo avatar da Maya e organiza o kit modular; veja
+[as medidas e evidências dessa integração](issue15-maya.md).
 A rota forma uma hélice em volta da torre. A câmera acompanha altura e volta,
 com o mesmo deslocamento relativo e ângulo de leitura da referência.
 `ReferenceStudy.unity` continua disponível como comparação visual estática.

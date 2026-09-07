@@ -1,0 +1,24 @@
+{
+  "method": "Real Overlay HTML rendered over captured Unity frames; composited stills, not a synchronized LIVE Studio recording",
+  "desktop": [
+    1080,
+    1920
+  ],
+  "mobile": [
+    360,
+    640
+  ],
+  "mobileIsEmulation": true,
+  "rows": 7,
+  "transparencyVerifiedBeforeBackgroundComposition": true,
+  "overflow": false,
+  "toastText": "Valeu, Maya QA!",
+  "toastFixtureStatus": 202,
+  "toastExpired": true,
+  "roundReplayAtFinish": {
+    "index": 2,
+    "height": 12,
+    "record": 20
+  },
+  "note": "Gift counts come from synthetic QA fixtures. Finish HUD replays the recorded round/height; other stills use the fixture HUD snapshot."
+}
