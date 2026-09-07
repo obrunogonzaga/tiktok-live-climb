@@ -32,6 +32,9 @@ public static class ContinuousSceneBuilder
         spawn.position = tower.GetStandingPosition(0);
         var botObject = new GameObject("Bot");
         botObject.transform.position = spawn.position;
+        Vector3 initialDirection = tower.GetStandingPosition(1) - spawn.position;
+        initialDirection.y = 0;
+        botObject.transform.rotation = Quaternion.LookRotation(initialDirection);
         var controller = botObject.AddComponent<CharacterController>();
         controller.height = 1.4f; controller.radius = .3f; controller.stepOffset = .25f;
         controller.skinWidth = .03f; controller.minMoveDistance = 0;
@@ -39,11 +42,9 @@ public static class ContinuousSceneBuilder
         visual.SetParent(botObject.transform, false);
         visual.localPosition = new Vector3(0, -.72f, 0);
         visual.localRotation = Quaternion.Euler(0, 15, 0);
-        var model = Model("Assets/Art/Bot/Bot.fbx", visual);
-        model.transform.localScale *= 1.3f;
-        RemapBot(model);
+        MayaAssetSetup.Create(visual);
         var bot = botObject.AddComponent<ClimbBot>();
-        botObject.AddComponent<BotVisualMotion>();
+        botObject.AddComponent<MayaVisualMotion>().Configure(bot, visual);
         var camera = Camera.main;
         var approvedCameraPosition = camera.transform.position;
         var approvedCameraRotation = camera.transform.rotation;
@@ -147,9 +148,4 @@ public static class ContinuousSceneBuilder
             renderer.sharedMaterials = renderer.sharedMaterials.Select(m => Material(m.name.StartsWith("Stone") ? m.name : m.name == "Ivy" ? "Ivy" : "Mortar")).ToArray();
     }
 
-    private static void RemapBot(GameObject model)
-    {
-        foreach (var renderer in model.GetComponentsInChildren<Renderer>())
-            renderer.sharedMaterials = renderer.sharedMaterials.Select(m => Material(m.name.Contains("Orange") ? "Bot orange" : m.name.Contains("Visor") ? "Bot visor" : m.name.Contains("Joint") ? "Bot joints" : m.name.Contains("Metal") ? "Bot metal" : "Bot shell")).ToArray();
-    }
 }

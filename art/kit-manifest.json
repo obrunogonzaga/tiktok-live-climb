@@ -1,0 +1,31 @@
+{
+  "schema": "tiktok-live-climb.environment-kit.v1",
+  "units": "1 Blender unit = 1 Unity metre",
+  "source": "art/tower-kit.blend",
+  "fbxAxes": {
+    "blenderUp": "Z",
+    "blenderForward": "-Y",
+    "fbxUp": "Y",
+    "fbxForward": "-Z"
+  },
+  "pieces": [
+    {"id":"MasonryPanel","file":"Kit/MasonryPanel.fbx","triangles":6048,"size":[4.543,0.482,3.189],"origin":"bottom-centre on outer wall plane; local +Y outward"},
+    {"id":"MasonryArchPanel","file":"Kit/MasonryArchPanel.fbx","triangles":7128,"size":[4.539,0.466,3.186],"origin":"bottom-centre on outer wall plane; arch centred on origin"},
+    {"id":"CornerPillar","file":"Kit/CornerPillar.fbx","triangles":864,"size":[0.487,0.481,4.063],"origin":"bottom outer corner; mass extends into local -X/-Y"},
+    {"id":"CorniceStraight","file":"Kit/CorniceStraight.fbx","triangles":648,"size":[4.651,0.522,0.301],"origin":"bottom-centre on outer wall plane; local +Y outward"},
+    {"id":"CorniceCorner","file":"Kit/CorniceCorner.fbx","triangles":756,"size":[1.848,1.834,0.299],"origin":"bottom outer corner; arms extend local -X/-Y"},
+    {"id":"ArchJamb","file":"Kit/ArchJamb.fbx","triangles":540,"size":[0.283,0.382,1.733],"origin":"bottom at jamb foot; local +Y outward"},
+    {"id":"ArchVoussoir","file":"Kit/ArchVoussoir.fbx","triangles":108,"size":[0.370,0.396,0.321],"origin":"centre of wedge at arch radius; rotate around local Y"},
+    {"id":"LedgeDeck","file":"Kit/LedgeDeck.fbx","triangles":324,"size":[1.385,0.877,0.300],"origin":"top-centre standing surface; local +Y away from tower"},
+    {"id":"LedgeCorbel","file":"Kit/LedgeCorbel.fbx","triangles":108,"size":[0.652,0.489,0.337],"origin":"attachment plane on tower at local -Y; support extends +Y"},
+    {"id":"CrownPost","file":"Kit/CrownPost.fbx","triangles":108,"size":[0.702,0.694,1.266],"origin":"bottom outer corner of battlement post"},
+    {"id":"CrownCap","file":"Kit/CrownCap.fbx","triangles":108,"size":[0.864,0.845,0.236],"origin":"bottom centre of crown cap"},
+    {"id":"IvyCluster","file":"Kit/IvyCluster.fbx","triangles":320,"size":[0.594,0.069,2.792],"origin":"wall attachment point; leaves project local +Y"}
+  ],
+  "approvedAssembly": {
+    "tower": {"file":"Tower.fbx","triangles":132360,"materials":["Stone0","Stone1","Stone2","Stone3","Stone4","Stone5","Mortar","Ivy"]},
+    "ledge": {"file":"Ledge.fbx","role":"approved hold render geometry"},
+    "continuousBody": {"file":"ContinuousBody.fbx","height":7.8,"triangles":71684},
+    "continuousBodyLod": {"file":"ContinuousBodyLOD.fbx","height":7.8,"triangles":25084}
+  }
+}

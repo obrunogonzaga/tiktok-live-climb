@@ -1,0 +1,12 @@
+{
+  "node": "22.22.3",
+  "command": "npm --prefix orchestrator test",
+  "tests": 11,
+  "passed": 11,
+  "failed": 0,
+  "productionLineCoverage": {
+    "orchestrator.js": 87.68,
+    "ladder.js": 87.23
+  },
+  "remoteCI": "not configured"
+}

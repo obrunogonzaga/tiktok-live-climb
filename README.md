@@ -2,7 +2,7 @@
 
 Live **9:16** em que um **bot sobe sozinho**. O chat paga pra atrapalhar: gift vira obstáculo, fumaça, empurrão ou boss; um TTS agradece o doador. Zero operação durante a sessão — só ligar o stream.
 
-**Status:** MVP local · subida contínua integrada · revisão visual/merge pendentes
+**Status:** MVP local · Maya 3D, torre modular e subida contínua · gifts ainda provisórios
 **Owner:** [Bruno Gonzaga Santos](https://github.com/obrunogonzaga)
 **Repo:** [obrunogonzaga/tiktok-live-climb](https://github.com/obrunogonzaga/tiktok-live-climb)
 **Tracker:** [Issues](https://github.com/obrunogonzaga/tiktok-live-climb/issues) · [Fase 1](https://github.com/obrunogonzaga/tiktok-live-climb/milestone/1)
@@ -13,7 +13,7 @@ Formato: lives tipo caos/climb (chat controla). Requisito duro: automação pont
 
 ## Look (norte visual)
 
-Concept, não frame do Unity. Pegada: torre neon à noite, bot compacto, props chunky, caos de partícula. Arte final em Blender ([#7](https://github.com/obrunogonzaga/tiktok-live-climb/issues/7)), depois de greybox jogável ([#2](https://github.com/obrunogonzaga/tiktok-live-climb/issues/2)).
+Concept, não frame do Unity. A torre, o céu noturno e a paleta continuam sendo a referência. Na #15, Bruno escolheu **Maya Prado** para substituir o robô; os retratos da persona orientam o avatar. A experiência visual final será revisada na [#17](https://github.com/obrunogonzaga/tiktok-live-climb/issues/17).
 
 <p align="center">
   <img src="docs/refs/gameplay.png" width="280" alt="Concept da torre: bot subindo, gifts virando caos" />
@@ -88,7 +88,7 @@ TTS: no máximo 1 fala / 2,5 s. O resto vira toast. Like não fala.
 | Fila / TTS / overlay state | orchestrator local (HTTP + WebSocket) |
 | Voz | ElevenLabs + fallback TTS local |
 | Captura | TikTok LIVE Studio (OBS só se o Studio falhar) |
-| Arte | Blender low-poly (hero). Greybox primeiro |
+| Arte | Blender · Maya com LOD, torre modular e materiais URP |
 
 **Bot** = state machine `Idle → Climb → Avoid → Recover → Celebrate → Reset`. LLM fora do gameplay.
 
@@ -146,7 +146,7 @@ Cada issue AFK é um **prompt** (Before / Build / Out of scope / Validate). Lock
 | [#8](https://github.com/obrunogonzaga/tiktok-live-climb/issues/8) | TikFinity real → `LiveEvent` | HITL |
 | [#9](https://github.com/obrunogonzaga/tiktok-live-climb/issues/9) | Ladder completa + Leão + placar | AFK |
 
-`HITL` = precisa do Bruno (conta, Studio, OK visual). `AFK` = dá pra implementar sem ele no loop. **#1** e **#2** já podem começar em paralelo.
+`HITL` = precisa do Bruno (conta, Studio, OK visual). `AFK` = dá pra implementar sem ele no loop. As #2–#4 e a composição #14 já foram entregues; #15 integra a Maya e o kit. #16 cobre os gifts finais e #17 o aceite visual completo.
 
 Mãos livres (quando a Fase 1 fechar): bot joga sozinho, gift spawna sozinho, TTS sozinho, round reseta sozinho, overlay sempre visível, fila TTS aguenta raid, **Bridge** reconecta, log CSV pós-live.
 
@@ -158,7 +158,7 @@ Manual aceitável: 1× Go Live + olhar ToS. Não aceitável: reagir a gift na m�
 
 1. Greybox (cápsula, cubos) até o climb funcionar.
 2. Style bible ([#1](https://github.com/obrunogonzaga/tiktok-live-climb/issues/1)) a partir destes refs.
-3. Blender box modeling: **Bot** + 8–12 peças de torre + 3 props MVP (rosa, caixa, fumaça). `*.blend` no git; `*.blend1` ignorado.
+3. Blender: **Maya** + 12 módulos de torre. Fontes, FBX, texturas e materiais no Git; `*.blend1` ignorado. Props/VFX finais dos gifts pertencem à #16.
 4. Unity: FBX + VFX. Gifts = prop + partícula, não cutscene.
 
 Meshy só se um prop travar. Hero (**Bot**) não.
@@ -179,9 +179,9 @@ npm --prefix orchestrator start
 ```
 
 Overlay: `http://127.0.0.1:8790/`; eventos: `POST http://127.0.0.1:8765/v1/events`.
-[Instruções e validações](game/README.md) · [Vídeo real](docs/evidence/continuous/playthrough.mp4).
+[Instruções e validações](game/README.md) · [Maya e kit](docs/issue15-maya.md) · [Vídeo real](docs/evidence/issue15/final/playthrough.mp4).
 
-![Subida contínua — capturas reais do Unity](docs/evidence/continuous/mobile-journey.png)
+![Maya na subida contínua — capturas reais do Unity](docs/evidence/issue15/final/mobile-journey.png)
 
 As três actions sintéticas existentes estão integradas; novas ajudas, arte final dos gifts,
 TikFinity real, TTS e transmissão ao vivo continuam fora desta entrega.

@@ -1,0 +1,36 @@
+[
+  {
+    "file": "base.obj",
+    "url": "https://raw.githubusercontent.com/makehumancommunity/makehuman/master/makehuman/data/3dobjs/base.obj",
+    "sha256": "8e761e6624b8f54536409135d1636da63b32486a90d4897f84e121d144f6fb4c",
+    "bytes": 1749303
+  },
+  {
+    "file": "female-young.target",
+    "url": "https://raw.githubusercontent.com/makehumancommunity/makehuman/master/makehuman/data/targets/macrodetails/caucasian-female-young.target",
+    "sha256": "06bca630441173bf15d13e9d0611d3bacda669c51667710faa32cc65aa7d5c61",
+    "bytes": 420557,
+    "upstreamSha256": "118379f6e8ba9266247fdb8788a20e1df40a239f97ced0b9905bcbcc74f6e820",
+    "normalization": "Trailing whitespace removed; source content unchanged."
+  },
+  {
+    "file": "MAKEHUMAN-LICENSE.md",
+    "url": "https://raw.githubusercontent.com/makehumancommunity/makehuman/master/LICENSE.md",
+    "sha256": "9e714b52ed6724965c7b655c63fb4c08e86e6d6deaf3a6055a56cb0bda251382",
+    "bytes": 3583,
+    "upstreamSha256": "edd99571ca62698f78c943fd4fffb159a413c315fa0d4819d3cec5cadaf8b4f1",
+    "normalization": "Whitespace normalized and Markdown heading converted to ATX; license wording unchanged."
+  },
+  {
+    "file": "MAKEHUMAN-CC0.txt",
+    "url": "https://raw.githubusercontent.com/makehumancommunity/makehuman/master/LICENSE.ASSETS.md",
+    "sha256": "f6089cba01cb570a24712b41ab8a586ccd3cc5ef53dc266ca50b95c288956d2c",
+    "bytes": 6962
+  },
+  {
+    "file": "MEDIAPIPE-LICENSE.txt",
+    "url": "https://raw.githubusercontent.com/google-ai-edge/mediapipe/master/LICENSE",
+    "sha256": "8707eef0533987efc5b155d64761eeb6e20793f50b9bd1a68dad1cf4719d0ed8",
+    "bytes": 12331
+  }
+]

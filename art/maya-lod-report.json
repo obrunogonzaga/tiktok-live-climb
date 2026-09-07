@@ -1,0 +1,150 @@
+{
+  "source": "Continuous MakeHuman CC0 anatomy with Maya photographic skin bake and authored hair/outfit",
+  "heightMetres": 1.7379357814788818,
+  "triangles": 3976,
+  "objects": [
+    {
+      "name": "Maya_Cargo",
+      "triangles": 470
+    },
+    {
+      "name": "Maya_Skin",
+      "triangles": 1750
+    },
+    {
+      "name": "Maya_Tank",
+      "triangles": 300
+    },
+    {
+      "name": "Maya_Eye_L",
+      "triangles": 80
+    },
+    {
+      "name": "Maya_Eye_R",
+      "triangles": 80
+    },
+    {
+      "name": "Maya_HairCrown",
+      "triangles": 200
+    },
+    {
+      "name": "Maya_HairLock_-1_0",
+      "triangles": 66
+    },
+    {
+      "name": "Maya_HairLock_-1_1",
+      "triangles": 66
+    },
+    {
+      "name": "Maya_HairLock_-1_2",
+      "triangles": 66
+    },
+    {
+      "name": "Maya_HairLock_1_0",
+      "triangles": 66
+    },
+    {
+      "name": "Maya_HairLock_1_1",
+      "triangles": 66
+    },
+    {
+      "name": "Maya_HairLock_1_2",
+      "triangles": 66
+    },
+    {
+      "name": "Maya_HairBack_-1",
+      "triangles": 66
+    },
+    {
+      "name": "Maya_HairBack_0",
+      "triangles": 66
+    },
+    {
+      "name": "Maya_HairBack_1",
+      "triangles": 66
+    },
+    {
+      "name": "Maya_Necklace",
+      "triangles": 72
+    },
+    {
+      "name": "Maya_Pendant",
+      "triangles": 32
+    },
+    {
+      "name": "Maya_CargoPocket_-1",
+      "triangles": 12
+    },
+    {
+      "name": "Maya_PocketStitch_-1",
+      "triangles": 6
+    },
+    {
+      "name": "Maya_BootUpper_-1",
+      "triangles": 96
+    },
+    {
+      "name": "Maya_BootSole_-1",
+      "triangles": 36
+    },
+    {
+      "name": "Maya_Lace_-1_0",
+      "triangles": 6
+    },
+    {
+      "name": "Maya_Lace_-1_1",
+      "triangles": 6
+    },
+    {
+      "name": "Maya_Lace_-1_2",
+      "triangles": 6
+    },
+    {
+      "name": "Maya_CargoPocket_1",
+      "triangles": 12
+    },
+    {
+      "name": "Maya_PocketStitch_1",
+      "triangles": 6
+    },
+    {
+      "name": "Maya_BootUpper_1",
+      "triangles": 96
+    },
+    {
+      "name": "Maya_BootSole_1",
+      "triangles": 36
+    },
+    {
+      "name": "Maya_Lace_1_0",
+      "triangles": 6
+    },
+    {
+      "name": "Maya_Lace_1_1",
+      "triangles": 6
+    },
+    {
+      "name": "Maya_Lace_1_2",
+      "triangles": 6
+    },
+    {
+      "name": "Maya_Belt",
+      "triangles": 60
+    },
+    {
+      "name": "Maya_BeltClasp",
+      "triangles": 2
+    }
+  ],
+  "bones": 18,
+  "boundsMin": [
+    -0.5537199378013611,
+    -0.33861562609672546,
+    0.0
+  ],
+  "boundsMax": [
+    0.5538869500160217,
+    0.14296023547649384,
+    1.7379357814788818
+  ]
+}

@@ -1,6 +1,8 @@
 # Style bible — pegada visual
 
-Norte pra modelar o **Bot** e os 3 props MVP. Hex e silhueta saem dos concepts, não de gosto.
+Norte para o **Bot** e os 3 props MVP. O concept orienta torre/ambiente/gifts.
+Na #15, Bruno substituiu o robô pela persona fictícia **Maya Prado**; os retratos
+fornecidos da Maya orientam rosto, cabelo e roupa do personagem.
 
 Refs: [gameplay.png](./refs/gameplay.png) (o jogo) · [viewer.png](./refs/viewer.png) (a live no celular).
 
@@ -29,42 +31,41 @@ Cena noturna. A luz sai dos emissivos (viseira, holds, jatos, fumaça), não de 
 - **Fog:** exponential, cor `#010E34` puxando magenta na distância. Dá altura na torre. Densidade baixa o bastante pra ler o Bot no centro-esquerda da safe zone.
 - **Key:** nenhum Directional Light de dia. Rim frio mínimo no casco branco, se precisar separar do céu.
 
-Evitar: sol de meio-dia, skybox diurno, pele realista / SSS, GI de estúdio, bloom infinito, lens flare.
+Evitar: sol de meio-dia, skybox diurno, GI de estúdio, bloom infinito e lens flare.
+A pele da Maya usa textura e luz URP; SSS caro não é necessário para a escala do jogo.
 
-## Silhueta do Bot
+## Maya — personagem da #15
 
-Não é humano. Não é webcam. Não é mascote de marca.
+Decisão explícita de Bruno: usar um avatar da Maya no lugar do robô, com detalhes
+e a mesma direção de acabamento da torre aprovada. A proibição anterior de
+aparência humana e as proporções de 2,9 cabeças aplicavam-se ao robô e foram
+substituídas por esta decisão. **Bot** continua sendo o papel do personagem
+autônomo; não implica uma aparência robótica.
 
-Leitura: toy / robô de serviço compacto. Cabeça enorme, corpo curto, membros stubby. Silhueta tem que fechar em ~200 px de altura no canvas 1080×1920.
+Referências da persona: `rosto.jpg` e `gamer.jpg` fornecidos em `~/Documents/Maya Prado`.
+Somente os assets visuais necessários entram no projeto; o cadastro da persona
+não faz parte do jogo. A textura frontal em `game/Assets/Art/Maya/Textures/MayaFace.png`
+é material de autoria gerado a partir desses retratos, nunca evidência de runtime.
 
-```
-         •          antena curta, ponta #FD8704
-      /███████\     capacete esfera, ~1/3 da altura
-      |  ●   ●  |     viseira preta wrap-around + 2 ovais emissivos
-     /|         |\  ombros = largura da cabeça; sem pescoço
-    / |  [███]  | \ torso curto; mochila cilíndrica nas costas
-      |         |
-      |_  |  _|     pernas 2 segmentos; pés bloco
-        ░   ░       jato #08D7FF nas solas (só no Climb)
-```
+- Adulta fictícia, rosto oval, olhos castanhos, sobrancelhas marcadas, sardas sutis
+  e cabelo castanho longo com mechas e volume. Preservar esses sinais em 3/4.
+- Proporções humanas semirrealistas; regata preta, calça cargo grafite, botas
+  escuras, costuras, cadarços, bolso e o pequeno colar dourado da referência.
+- Malha facial com relevo de nariz, lábios, mandíbula e crânio; cabelo com
+  geometria lateral/traseira. Não usar retrato em billboard como personagem.
+- Bruno delegou a escolha do acabamento ao melhor resultado visual. Usar **até
+  12.000 triângulos no avatar principal** e **menos de 4.000 no LOD distante**,
+  com desempenho medido. O teto anterior foi definido para o robô. Registrar
+  corpo, rosto, cabelo e acessórios em cada nível, sem omitir peças.
+- Rig genérico simples para deformar os membros. Sem Mixamo, dependência de
+  retarget humanoide, IA de movimento ou alteração do CharacterController.
+- Preservar câmera, hélice, escala do percurso e posição dos pés. Ajustar a escala
+  visual para a leitura próxima de 200 px e conferir face/cabelo em tamanho de celular.
+- Materiais de pele/tecido/cabelo recebem a luz noturna existente. Neon continua
+  nos apoios da torre; evitar transformar pele ou roupa em emissores.
 
-Proporção (1 cabeça = diâmetro do capacete ≈ 0,38 m; altura total ≈ 1,1 m ≈ **2,9 cabeças** — humano é ~7,5):
-
-| Peça | Medida | Forma |
-| --- | --- | --- |
-| Cabeça | esfera Ø 1,0 | capacete liso, plástico branco. Sem queixo, sem nariz, sem orelha humana |
-| Viseira | faixa horizontal no terço médio, wrap-around | faceplate **preto fosco**; dois ovais `#FD8704` emissivos. Sem íris, sem pupila, sem boca |
-| Laterais da cabeça | disco Ø ~0,22 em cada lado | porta/fone, acento laranja — não orelha |
-| Antena | 1 stub no topo, ~0,18 de alto | uma só; ponta emissiva. Sem par de orelhas de gato, sem halo |
-| Torso | 0,7 de alto × 1,0 de largo | placas arredondadas brancas; peito fechado, sem abs |
-| Mochila | cilindro 0,45 × 0,7, nas costas | anéis pretos + faixa emissiva laranja. Não jetpack cinematográfico |
-| Braços | 2 segmentos, espessura ~0,28 | mãos em bloco/luva, **sem dedos** |
-| Pernas | 2 segmentos, mais curtas que os braços | pés cubóides estáveis pro CharacterController |
-| Juntas | ombro, cotovelo, joelho | dobradiça **preta** visível. Sem músculo, sem tecido |
-
-Material: branco `#E8ECEC` semibrilho (não cromo, não borracha, não pele). Juntas e viseira: preto fosco. Emissive só na viseira, antena, faixas da mochila e jatos.
-
-O que **não** modelar: corpo 8 cabeças, astronauta, PNG tuber, facecam, logo TikTok, mascote de marca, cabelo, roupa, arma.
+O robô e `ReferenceStudy.unity` são a referência histórica aprovada da #14.
+Não reconstruir a Maya a partir das antigas regras de capacete/viseira/antena.
 
 ## 3 props MVP — regra “prop + VFX”
 

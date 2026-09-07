@@ -1,0 +1,11 @@
+{
+    "method": "Unity camera silhouette pass; isolated avatar, same pose/projection, postprocessing off",
+    "canvasWidth": 1080,
+    "canvasHeight": 1920,
+    "x": 287,
+    "y": 952,
+    "width": 94,
+    "height": 243,
+    "insideSafeZone": true,
+    "nearTargetScale": true
+}
